@@ -65,8 +65,9 @@ function listen(){
     panel.querySelectorAll("[data-after]").forEach(function (input) {
         input.addEventListener("input", function (e){
             config.breaks[Number(e.target.dataset.after)].after = Number(e.target.value);
+        });
     });
-    })
+    
     panel.querySelectorAll("[data-label]").forEach(function (input) {
         input.addEventListener("input", function (e){
             config.breaks[Number(e.target.dataset.label)].label = e.target.value;
