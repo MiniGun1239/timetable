@@ -1,3 +1,6 @@
+import { renderSetup } from "./setup.js";
+renderSetup();
+
 const tabNames = ["setup", "generate", "timetables"];
 
 // holy functions
