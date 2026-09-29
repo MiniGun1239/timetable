@@ -1,6 +1,3 @@
-import { DEFAULT_CONFIG } from "./config.js";
-
-let config = structuredClone(DEFAULT_CONFIG);
 const tabNames = ["setup", "generate", "timetables"];
 
 // holy functions
@@ -8,7 +5,7 @@ tabNames.forEach(function(name){
     let button = document.getElementById(name);
     let panel = document.getElementById(name + "Panel");
 
-    buttons.addEventListener("click", function (){
+    button.addEventListener("click", function (){
         tabNames.forEach(function (other){
             document.getElementById(other).classList.remove("active");
             document.getElementById(other + "Panel").classList.remove("active");
