@@ -7,7 +7,9 @@ authors = [
     { name = "Amaan", email = "amaanarmaanmuhammad@gmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "flask>=3.1.3",
+]
 
 [project.scripts]
 timetable = "timetable:main"
