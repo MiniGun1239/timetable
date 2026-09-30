@@ -1,4 +1,4 @@
-import { config  } from "./store.js";
+import { config, newId } from "./store.js";
 
 const panel = document.getElementById("setupPanel");
 
@@ -14,6 +14,17 @@ function breakRow(b, i){
                 <label> Minutes <input type="number" data-minutes="${i}" value="${b.minutes}" min="0"></label>
                 <button type="button" data-remove="${i}">Remove</button>
         `;
+}
+
+function teacherRow(t, i){
+    // aaaaaaaaaaaaaaa not the html again
+    return `
+        <div class="row">
+            <label>Name <input type="text" data-tname="${i}" value="${esc(t.name)}"> </label>
+            <label>Max per day <input type="number" data-tmax="${i}" value="${t.maxPerDay}" min="0" max="20"> </label>
+            <button type="button" data-remove-t="${i}">Remove</button>
+        </div>
+    `
 }
 
 export function renderSetup(){
@@ -42,6 +53,13 @@ export function renderSetup(){
         </div>
 
         <button type="button" id="addBreak">Add break</button>
+
+        <h3>Teachers</h3>
+
+        <div id="teacherList"> ${config.teachers.map(teacherRow).join("")}
+        </div>
+
+        <button type="button" id="addTeacher">Add teacher</button>
     `;
 
     listen();
@@ -96,6 +114,30 @@ function listen(){
 
     document.getElementById("addBreak").addEventListener("click", function (){
         config.breaks.push({after: 1, label: "Break", minutes: 15});
+        renderSetup();
+    })
+
+    panel.querySelectorAll("[data-tname]").forEach(function (input){
+        input.addEventListener("input", function (e){
+            config.teachers[Number(e.target.dataset.tname)].name = e.target.value;
+        })
+    })
+
+    panel.querySelectorAll("[data-tmax]").forEach(function(input){
+        input.addEventListener("input", function (e){
+            config.teachers[Number(e.target.dataset.tmax)].maxPerDay = Number(e.target.value);
+        })
+    })
+
+    panel.querySelectorAll("[data-remove-t]").forEach(function (btn){
+        btn.addEventListener("click", function (e){
+            config.teachers.splice(Number(e.target.dataset.removeT), 1);
+            renderSetup();
+        })
+    })
+
+    document.getElementById("addTeacher").addEventListener("click", function(){
+        config.teachers.push({id: newId("t"), name: "", maxPerDay: 6});
         renderSetup();
     })
 }
