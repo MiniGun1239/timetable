@@ -1,17 +1,3 @@
-from email._header_value_parser import Section
-
-
-class Teacher:
-    def __init__(self, id, name, subjects: list, section: Section):
-        self.id = id
-        self.name = name
-        self.subjects = subjects
-        self.section = section
-        return
-
-    # add somehow routing this
-
-
 class Period:
     def __init__(self, id, name):
         self.id = id
@@ -22,7 +8,14 @@ class Period:
 
 
 class Section:
-    def __init__(self, id, grade, section, back2back, nobacktoback = False):
+    def __init__(
+            self,
+            id: int,
+            grade: int,
+            section: str,
+            back2back: bool = False,
+            nobacktoback: bool = False
+    ) -> None:
         if back2back and nobacktoback:
             print("Invalid, cant have both back to back and not back to back")
             raise ValueError
@@ -35,6 +28,23 @@ class Section:
         return
 
     # add more stuff here
+
+
+class Teacher:
+    def __init__(
+            self,
+            id: int,
+            name: str,
+            subjects: list,
+            section: Section):
+        self.id = id
+        self.name = name
+        self.subjects = subjects
+        self.section = section
+        return
+
+    # add somehow routing this
+
 
 class Config:
     def __init__(
