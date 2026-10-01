@@ -78,3 +78,16 @@ button {
     font: inherit;
     cursor: pointer;
 }
+
+/* i wll change this later*/
+label input[type="checkbox"]{
+    margin-right: 4px;
+}
+
+.block {
+    border: 1px solid #EAE2D6;
+    border-radius: 4px;
+    padding: 12px;
+    margin: 8px 0;
+    background: #EEEEEE;
+}
