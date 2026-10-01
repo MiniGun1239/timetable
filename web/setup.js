@@ -37,8 +37,8 @@ function subjectRow(s, i){
     `
 }
 
-export function renderSetup(){
-    let dayBoxes = ["Mon", "Tue", "Wed", "Thu", "Fri"].map(function (d){
+export function renderSetup() {
+    let dayBoxes = ["Mon", "Tue", "Wed", "Thu", "Fri"].map(function (d) {
         let on = config.days.includes(d) ? "checked" : "";
         return `<label><input type="checkbox" data-days="${d}" ${on}> ${d}</label>`;
     }).join("");
@@ -58,25 +58,26 @@ export function renderSetup(){
     ${dayBoxes}
 
     <h3>Breaks</h3>
+    <div id="breakList"> 
+        ${config.breaks.map(breakRow).join("")}    
+    </div>
+    
+    <button type="button" id="addBreak">Add break</button>
+    <h3>Teachers</h3>
 
-    <div id="breakList"> ${config.breaks.map(breakRow).join("")}
-        </div>
+    <div id="teacherList"> 
+        ${config.teachers.map(teacherRow).join("")}
+    </div>
 
-        <button type="button" id="addBreak">Add break</button>
+    <button type="button" id="addTeacher">Add teacher</button>
 
-        <h3>Teachers</h3>
+    <h3>Subjects</h3>
 
-        <div id="teacherList"> ${config.teachers.map(teacherRow).join("")}
-        </div>
+    <div id="subjectList">
+        ${config.subjects.map(subjectRow).join("")}
+    </div>
 
-        <button type="button" id="addTeacher">Add teacher</button>
-
-        <h3>Subjects</h3>
-
-        <div id="subjectList"> ${config.subjects.map(subjectRow).join("")}
-        </div>
-
-        <button type="button" id="addSubject">Add subject</button>
+    <button type="button" id="addSubject">Add subject</button>
     `;
 
     listen();
