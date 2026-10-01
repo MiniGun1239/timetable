@@ -77,4 +77,60 @@ button {
     padding: 8px 12px;
     font: inherit;
     cursor: pointer;
+    border: 0;
+}
+
+/* i wll change this later*/
+label input[type="checkbox"]{
+    margin-right: 4px;
+}
+
+.block {
+    border: 1px solid #EAE2D6;
+    border-radius: 4px;
+    padding: 12px;
+    margin: 8px 0;
+    background: #EEEEEE;
+}
+
+.grid {
+    border-collapse: collapse;
+    background: #F7F2EB;
+    margin: 12px 0;
+}
+
+.grid th, .grid td {
+    border: 1px solid #EAE2D6;
+    padding: 8px 10px;
+    text-align: left;
+    min-width: 90px;
+}
+
+.grid th {
+    background: #EEEEEE;
+    color: #8B9A6E;
+}
+
+.grid td b {
+    display: block;
+    font-size: 14px;
+}
+
+.grid td small {
+    color: #777;
+}
+
+.breakRow td {
+    background: #8B9A6E;
+    color: #F7F2EB;
+    text-align: center;
+    font-size: 12px;
+}
+
+select {
+    background: #EEEEEE;
+    border: 1px solid #EAE2D6;
+    border-radius: 4px;
+    padding: 6px 8px;
+    font: inherit;
 }

@@ -37,8 +37,28 @@ function subjectRow(s, i){
     `
 }
 
-export function renderSetup() {
-    let dayBoxes = ["Mon", "Tue", "Wed", "Thu", "Fri"].map(function (d) {
+function gradeBlock(g, gi){
+    let section = g.sections.map(function (name, si){
+        return `
+            <div class="row">
+                <label>Section <input type="text" data-sec="${gi}" data-si="${si}" value="${esc(name)}"> </label>
+                <button type="button" data-remove-sec="${gi}" data-si="${si}">Remove</button>
+            </div>`;
+    }).join("");
+
+    return `
+        <div class="block">
+            <div class="row">
+            <label>Grade <input type="text" data-gname="${gi}" value="${esc(g.name)}"></label>
+            <button type="button" data-add-sec="${gi}">Add section</button>
+             <button type="button" data-remove-g="${gi}">Remove grade</button>
+             </div>
+             <div class="rows">${section}</div>
+        </div>`;
+}
+
+export function renderSetup(){
+    let dayBoxes = ["Mon", "Tue", "Wed", "Thu", "Fri"].map(function (d){
         let on = config.days.includes(d) ? "checked" : "";
         return `<label><input type="checkbox" data-days="${d}" ${on}> ${d}</label>`;
     }).join("");
@@ -58,26 +78,32 @@ export function renderSetup() {
     ${dayBoxes}
 
     <h3>Breaks</h3>
-    <div id="breakList"> 
-        ${config.breaks.map(breakRow).join("")}    
-    </div>
-    
-    <button type="button" id="addBreak">Add break</button>
-    <h3>Teachers</h3>
 
-    <div id="teacherList"> 
-        ${config.teachers.map(teacherRow).join("")}
-    </div>
+    <div id="breakList"> ${config.breaks.map(breakRow).join("")}
+        </div>
 
-    <button type="button" id="addTeacher">Add teacher</button>
+        <button type="button" id="addBreak">Add break</button>
 
-    <h3>Subjects</h3>
+        <h3>Teachers</h3>
 
-    <div id="subjectList">
-        ${config.subjects.map(subjectRow).join("")}
-    </div>
+        <div id="teacherList"> ${config.teachers.map(teacherRow).join("")}
+        </div>
 
-    <button type="button" id="addSubject">Add subject</button>
+        <button type="button" id="addTeacher">Add teacher</button>
+
+        <h3>Subjects</h3>
+
+        <div id="subjectList"> ${config.subjects.map(subjectRow).join("")}
+        </div>
+
+        <button type="button" id="addSubject">Add subject</button>
+
+        <h3>Grades and Sections</h3>
+
+        <div id="gradeList"> ${config.grades.map(gradeBlock).join("")}
+        </div>
+
+        <button type="button" id="addGrade">Add grade</button>
     `;
 
     listen();
@@ -85,6 +111,10 @@ export function renderSetup() {
 
 // aaah boring repetitive ahh shi
 
+// so i aint changing it
+//aaaaaaaaaaaa
+// i dont want to throw all those efforts to waste
+// im js gonna copy paste a million time
 function listen(){
     document.getElementById("schoolName").addEventListener("input", function (e) {
         config.school = e.target.value;
@@ -183,4 +213,46 @@ function listen(){
         renderSetup();
         })
 
+    panel.querySelectorAll("[data-gname]").forEach(function (input){
+        input.addEventListener("input", function (e){
+            config.grades[Number(e.target.dataset.gname)].name = e.target.value;
+        })
+    })
+
+    panel.querySelectorAll("[data-sec]").forEach(function (input){
+        input.addEventListener("input", function(e){
+            let gi = Number(e.target.dataset.sec);
+            let si = Number(e.target.dataset.si);
+            config.grades[gi].sections[si] = e.target.value;
+        })
+    })
+
+    panel.querySelectorAll("[data-add-sec]").forEach(function (btn){
+        btn.addEventListener("click", function (e){
+            config.grades[Number(e.target.dataset.addSec)].sections.push("");
+            renderSetup();
+        })
+    })
+
+    panel.querySelectorAll("[data-remove-sec]").forEach(function (btn){
+        btn.addEventListener("click", function (e){
+            let gi = Number(e.target.dataset.removeSec);
+            let si = Number(e.target.dataset.si);
+            config.grades[gi].sections.splice(si, 1);
+            renderSetup();
+        })
+    })
+
+    panel.querySelectorAll("[data-remove-g]").forEach(function(btn){
+        btn.addEventListener("click", function(e){
+            config.grades.splice(Number(e.target.dataset.removeG), 1);
+            renderSetup();
+        })
+    })
+
+    // aaaah im lowk so bored of this shi
+    document.getElementById("addGrade").addEventListener("click", function (){
+        config.grades.push({ id: newId("g"), name: "", sections: [] });
+        renderSetup();
+    })
 }
