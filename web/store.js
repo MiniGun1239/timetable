@@ -11,10 +11,17 @@ export const EMPTY_CONFIG = {
     subjects: [],
     teachers: [],
     assignments: [],
-}
+};
 
 export let config = structuredClone(EMPTY_CONFIG);
 
 export function setConfig(next){
     config = next;
 }
+
+let nextId = 1;
+
+export function newId(prefix){
+    return prefix + nextId++;
+}
+

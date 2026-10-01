@@ -1,4 +1,4 @@
-import { config  } from "./store.js";
+import { config, newId } from "./store.js";
 
 const panel = document.getElementById("setupPanel");
 
@@ -16,13 +16,34 @@ function breakRow(b, i){
         `;
 }
 
+function teacherRow(t, i){
+    // aaaaaaaaaaaaaaa not the html again
+    return `
+        <div class="row">
+            <label>Name <input type="text" data-tname="${i}" value="${esc(t.name)}"> </label>
+            <label>Max per day <input type="number" data-tmax="${i}" value="${t.maxPerDay}" min="0" max="20"> </label>
+            <button type="button" data-remove-t="${i}">Remove</button>
+        </div>
+    `
+}
+
+function subjectRow(s, i){
+    return `
+        <div class="row">
+            <label>Name <input type="text" data-sname="${i}" value="${esc(s.name)}"> </label>
+            <label><input type="checkbox" data-snobb="${i}" ${s.noBackToBack ? "checked" : ""}> No back to back</label>
+            <button type="button" data-remove-s="${i}">Remove</button>
+            </div>
+    `
+}
+
 export function renderSetup(){
     let dayBoxes = ["Mon", "Tue", "Wed", "Thu", "Fri"].map(function (d){
         let on = config.days.includes(d) ? "checked" : "";
         return `<label><input type="checkbox" data-days="${d}" ${on}> ${d}</label>`;
     }).join("");
 
-    // aaah so much html
+    // aaah so much htmls
 
     panel.innerHTML = `
     <h2>School Setup</h2>
@@ -42,6 +63,20 @@ export function renderSetup(){
         </div>
 
         <button type="button" id="addBreak">Add break</button>
+
+        <h3>Teachers</h3>
+
+        <div id="teacherList"> ${config.teachers.map(teacherRow).join("")}
+        </div>
+
+        <button type="button" id="addTeacher">Add teacher</button>
+
+        <h3>Subjects</h3>
+
+        <div id="subjectList"> ${config.subjects.map(subjectRow).join("")}
+        </div>
+
+        <button type="button" id="addSubject">Add subject</button>
     `;
 
     listen();
@@ -98,4 +133,53 @@ function listen(){
         config.breaks.push({after: 1, label: "Break", minutes: 15});
         renderSetup();
     })
+
+    panel.querySelectorAll("[data-tname]").forEach(function (input){
+        input.addEventListener("input", function (e){
+            config.teachers[Number(e.target.dataset.tname)].name = e.target.value;
+        })
+    })
+
+    panel.querySelectorAll("[data-tmax]").forEach(function(input){
+        input.addEventListener("input", function (e){
+            config.teachers[Number(e.target.dataset.tmax)].maxPerDay = Number(e.target.value);
+        })
+    })
+
+    panel.querySelectorAll("[data-remove-t]").forEach(function (btn){
+        btn.addEventListener("click", function (e){
+            config.teachers.splice(Number(e.target.dataset.removeT), 1);
+            renderSetup();
+        })
+    })
+
+    document.getElementById("addTeacher").addEventListener("click", function(){
+        config.teachers.push({id: newId("t"), name: "", maxPerDay: 6});
+        renderSetup();
+    })
+    // omfg there must be some way of not writing all this 
+    panel.querySelectorAll("[data-sname]").forEach(function (input){
+        input.addEventListener("input", function (e){
+        config.subjects[Number(e.target.dataset.sname)].name = e.target.value;
+        })
+    })
+
+    panel.querySelectorAll("[data-snobb]").forEach(function (box){
+        box.addEventListener("change", function (e){
+        config.subjects[Number(e.target.dataset.snobb)].noBackToBack = e.target.checked;
+        })
+    })
+
+    panel.querySelectorAll("[data-remove-s]").forEach(function(btn){
+        btn.addEventListener("click", function (e){
+        config.subjects.splice(Number(e.target.dataset.removeS), 1);
+        renderSetup();
+        })
+    })
+
+    document.getElementById("addSubject").addEventListener("click", function(){
+        config.subjects.push({id: newId("s"), name: "", noBackToBack: false});
+        renderSetup();
+        })
+
 }
