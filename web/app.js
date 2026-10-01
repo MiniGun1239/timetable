@@ -1,5 +1,8 @@
 import { renderSetup } from "./setup.js";
+import { renderTimetables } from "./render.js";
+
 renderSetup();
+renderTimetables();
 
 const tabNames = ["setup", "generate", "timetables"];
 
