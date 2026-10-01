@@ -27,13 +27,23 @@ function teacherRow(t, i){
     `
 }
 
+function subjectRow(s, i){
+    return `
+        <div class="row">
+            <label>Name <input type="text" data-sname="${i}" value="${esc(s.name)}"> </label>
+            <label><input type="checkbox" data-snobb="${i}" ${s.noBackToBack ? "checked" : ""}> No back to back</label>
+            <button type="button" data-remove-s="${i}">Remove</button>
+            </div>
+    `
+}
+
 export function renderSetup(){
     let dayBoxes = ["Mon", "Tue", "Wed", "Thu", "Fri"].map(function (d){
         let on = config.days.includes(d) ? "checked" : "";
         return `<label><input type="checkbox" data-days="${d}" ${on}> ${d}</label>`;
     }).join("");
 
-    // aaah so much html
+    // aaah so much htmls
 
     panel.innerHTML = `
     <h2>School Setup</h2>
@@ -60,6 +70,13 @@ export function renderSetup(){
         </div>
 
         <button type="button" id="addTeacher">Add teacher</button>
+
+        <h3>Subjects</h3>
+
+        <div id="subjectList"> ${config.subjects.map(subjectRow).join("")}
+        </div>
+
+        <button type="button" id="addSubject">Add subject</button>
     `;
 
     listen();
@@ -140,4 +157,29 @@ function listen(){
         config.teachers.push({id: newId("t"), name: "", maxPerDay: 6});
         renderSetup();
     })
+    // omfg there must be some way of not writing all this 
+    panel.querySelectorAll("[data-sname]").forEach(function (input){
+        input.addEventListener("input", function (e){
+        config.subjects[Number(e.target.dataset.sname)].name = e.target.value;
+        })
+    })
+
+    panel.querySelectorAll("[data-snobb]").forEach(function (box){
+        box.addEventListener("change", function (e){
+        config.subjects[Number(e.target.dataset.snobb)].noBackToBack = e.target.checked;
+        })
+    })
+
+    panel.querySelectorAll("[data-remove-s]").forEach(function(btn){
+        btn.addEventListener("click", function (e){
+        config.subjects.splice(Number(e.target.dataset.removeS), 1);
+        renderSetup();
+        })
+    })
+
+    document.getElementById("addSubject").addEventListener("click", function(){
+        config.subjects.push({id: newId("s"), name: "", noBackToBack: false});
+        renderSetup();
+        })
+
 }
