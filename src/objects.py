@@ -1,7 +1,12 @@
-class Period:
-    def __init__(self, id, name):
+class Subject:
+    def __init__(self,
+                 id: int,
+                 name: str,
+                 sections: list):
         self.id = id
         self.name = name
+        self.sections = sections
+
         return
 
     # add more stuff idk wwhat tho
@@ -35,11 +40,11 @@ class Teacher:
             self,
             id: int,
             name: str,
-            subjects: list,
+            subject_ids: list,
             section: Section):
         self.id = id
         self.name = name
-        self.subjects = subjects
+        self.subjects = subject_ids
         self.section = section
         return
 
