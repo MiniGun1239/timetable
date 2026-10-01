@@ -1,5 +1,7 @@
 from flask import Flask, render_template
 
+from objects import *
+
 app = Flask(
     __name__,
     template_folder='../web',
@@ -11,6 +13,12 @@ app = Flask(
 def hello_world():
     return render_template('index.html')
 
+
+def main():
+    pass
+
+
 if __name__ == '__main__':
     app.run()
+    main()
 
