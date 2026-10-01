@@ -14,6 +14,11 @@ def hello_world():
     return render_template('index.html')
 
 
+@app.route('POST /api/generate')
+def generate():
+    pass
+
+
 def main():
     pass
 
