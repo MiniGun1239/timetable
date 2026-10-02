@@ -18,5 +18,9 @@ tabNames.forEach(function(name){
         });
         button.classList.add("active");
         panel.classList.add("active");
+
+        if (name === "timetables"){
+            renderTimetables();
+        }
     })
 }) 
