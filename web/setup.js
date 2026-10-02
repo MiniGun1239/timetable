@@ -109,6 +109,9 @@ export function renderSetup(){
         </div>
 
         <button type="button" id="addGrade">Add grade</button>
+
+        <button type="button" id="checkSetup">Check setup</button>
+        <p id="setupMessage"></p>
     `;
 
     listen();
@@ -262,5 +265,43 @@ function listen(){
     document.getElementById("addGrade").addEventListener("click", function (){
         config.grades.push({ id: newId("g"), name: "", sections: [] });
         renderSetup();
+    })
+
+    // oh non on oon nnono nnot this again aaaaahaaaa
+
+    document.getElementById("checkSetup").addEventListener("click", function (){
+        let errors = [];
+
+        if (!config.school.trim()){
+            errors.push("Enter a school name")
+        }
+
+        if (!Number.isInteger(config.periodsPerDay) || config.periodsPerDay < 1){
+            errors.push("Periods per day must be a positive whole number")
+        }
+
+        if (!Number.isInteger(config.periodMinutes) || config.periodMinutes < 1){
+            errors.push("Period length must be a positive number")
+        }
+
+        if (config.days.length === 0){
+            errors.push("Choose atleast one teaching day")
+        }
+
+        config.breaks.forEach(function(breakItem){
+            if(breakItem.after < 1 || breakItem.after > config.periodsPerDay){
+                errors.push("Each break must be after a period")
+            }
+        });
+
+        let message = document.getElementById("setupMessage");
+
+        if(errors.length){
+            message.textContent = errors.join(" ");
+        }
+
+        else {
+            message.textContent = "Setup looks good";
+        }
     })
 }
