@@ -1,6 +1,10 @@
-import { config, newId } from "./store.js";
+import { config, newId, saveConfig } from "./store.js";
 
 const panel = document.getElementById("setupPanel");
+
+panel.addEventListener("input", saveConfig);
+panel.addEventListener("change", saveConfig);
+panel.addEventListener("click", saveConfig);
 
 function esc(text){
     return String(text)
