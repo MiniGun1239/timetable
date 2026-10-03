@@ -3,6 +3,7 @@ import { schedule } from "./data.js"
 
 const panel = document.getElementById("timetablesPanel");
 let picked = "";
+let view = "class";
 
 export function renderTimetables(){
     let names = Object.keys(schedule);
@@ -14,7 +15,17 @@ export function renderTimetables(){
 
     panel.innerHTML = `
     <h2>Timetables</h2>
-    <label>Class <select id="classPick">${options}</select></label>
+
+    <label>View
+        <select id="viewPick">
+            <option value="class" ${view === "class" ? "selected" : ""}>Class timetable</option>
+            <option value="teacher" ${view === "teacher" ? "selected" : ""}>Teacher timetable</option>
+            <option value="all" ${view === "all" ? "selected" : ""}>All classes</option>
+        </select>
+    </label>
+
+    <label id="classPicker">Class <select id="classPick">${options}</select></label>
+    <button type="button" id="printTimetable">Print / Save as PDF</button>
     <div id="gridBox"></div>
     `;
 
@@ -22,7 +33,36 @@ export function renderTimetables(){
         picked = e.target.value;
         renderGrid();
     })
-    renderGrid();
+
+    document.getElementById("viewPick").addEventListener("change", function(e){
+        view = e.target.value;
+        showView()
+    })
+
+    document.getElementById("printTimetable").addEventListener("click", function(){
+        window.print();
+    })
+        showView();
+}
+
+function showView(){
+    let classPicker = document.getElementById("classPicker")
+    let printButton = document.getElementById("printTimetable")
+
+    if (view === "class"){
+        classPicker.hidden = false;
+        printButton.hidden = false;
+        renderGrid();
+        return;
+    }
+
+    classPicker.hidden = true;
+    printButton.hidden = true;
+
+    let message = view === "teacher" ? 
+    "going to make this soon" : "going to make this soon";
+
+    document.getElementById("gridBox").innerHTML = `<p>${message}</p>`
 }
 
 // lowk i am thinking of creating some art for this
