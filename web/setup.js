@@ -1,6 +1,10 @@
-import { config, newId } from "./store.js";
+import { config, newId, saveConfig } from "./store.js";
 
 const panel = document.getElementById("setupPanel");
+
+panel.addEventListener("input", saveConfig);
+panel.addEventListener("change", saveConfig);
+panel.addEventListener("click", saveConfig);
 
 function esc(text){
     return String(text)
@@ -9,10 +13,11 @@ function esc(text){
 function breakRow(b, i){
         return `
             <div class="row">
-                <label>After period <input type="number" data-after="${b.after}" min="1"></label>
+                <label>After period <input type="number" data-after="${i}" value="${b.after}" min="1"></label>
                 <label> Label <input type="text" data-label="${i}" value="${esc(b.label)}"></label>
                 <label> Minutes <input type="number" data-minutes="${i}" value="${b.minutes}" min="0"></label>
                 <button type="button" data-remove="${i}">Remove</button>
+                </div>
         `;
 }
 
@@ -104,6 +109,9 @@ export function renderSetup(){
         </div>
 
         <button type="button" id="addGrade">Add grade</button>
+
+        <button type="button" id="checkSetup">Check setup</button>
+        <p id="setupMessage"></p>
     `;
 
     listen();
@@ -155,8 +163,11 @@ function listen(){
 
     panel.querySelectorAll("[data-days]").forEach(function (box){
         box.addEventListener("change", function(){
-            config.days = panel.querySelectorAll("[data-days]:checked")
-            .map(function (c) {return c.dataset.days})
+            config.days = Array.from(
+                panel.querySelectorAll("[data-days]:checked")).map(function (c){
+                    return c.dataset.days;
+                }
+            )
         })
     })
 
@@ -255,4 +266,48 @@ function listen(){
         config.grades.push({ id: newId("g"), name: "", sections: [] });
         renderSetup();
     })
+
+    // oh non on oon nnono nnot this again aaaaahaaaa
+
+    document.getElementById("checkSetup").addEventListener("click", function (){
+        let errors = [];
+
+        let periodsValid = Number.isInteger(config.periodsPerDay) && config.periodsPerDay >= 1;
+
+        if (!config.school.trim()){
+            errors.push("Enter a school name")
+        }
+
+        if (!periodsValid){
+            errors.push("Periods per day must be a positive whole number")
+        }
+
+        if (!Number.isInteger(config.periodMinutes) || config.periodMinutes < 1){
+            errors.push("Period length must be a positive number")
+        }
+
+        if (config.days.length === 0){
+            errors.push("Choose atleast one teaching day")
+        }
+
+        if (periodsValid && config.breaks.some(function(breakItem){
+                return breakItem.after < 1 ||
+                    breakItem.after > config.periodsPerDay;
+            })
+        ){
+            errors.push("Move breaks to after a period from 1 to " + config.periodsPerDay + ".");
+        }
+
+        let message = document.getElementById("setupMessage");
+
+        if(errors.length){
+            message.textContent = "Fix these seetings: \n•" + errors.join("\n• ");
+            message.className = "validationMessage error";
+        }
+        else {
+            message.textContent = "Setup looks good";
+            message.className = "validationMessage success";
+        }
+    })
+
 }

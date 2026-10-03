@@ -134,3 +134,19 @@ select {
     padding: 6px 8px;
     font: inherit;
 }
+
+.validationMessage {
+    white-space: pre-line;
+    padding: 12px;
+    border-radius: 4px;
+}
+
+.validationMessage.error {
+    color: #7a241d;
+    background:#f8e5e2;
+}
+
+.validationMessage.success {
+    color: #35512f;
+    background: #e8f0e3;
+}
