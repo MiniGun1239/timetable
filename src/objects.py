@@ -83,6 +83,7 @@ class Teacher:
 class Config:
     def __init__(
             self,
+            days: list[str],
             periods: int,
             school: str,
             teachers: list,
@@ -91,7 +92,7 @@ class Config:
     ) -> None:
         self.school = school
         self.period_per_day = periods
-        self.days = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+        self.days = days
         self.breaks = [
             {"after": periods // 3, "label": "First Break", "minutes": 15},
             {"after": periods*2 // 3, "label": "Second Break", "minutes": 15},
@@ -100,4 +101,34 @@ class Config:
         self.classes = classes
         self.subjects = subjects
         return
+
+
+# --- END OF CLASSES ---
+
+
+# --- BEGINNING OF TESTS ---
+def all_test():
+    pass
+
+
+def config_test():
+    pass
+
+
+def teacher_test():
+    pass
+
+
+def section_test():
+    pass
+
+
+def subject_test():
+    pass
+
+
+# --- END OF TESTS ---
+if __name__ == "__main__":
+    all_test()
+    pass
 
