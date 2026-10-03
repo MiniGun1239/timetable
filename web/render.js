@@ -5,6 +5,7 @@ const panel = document.getElementById("timetablesPanel");
 let picked = "";
 let view = "class";
 let pickedTeacher = "";
+let teacherIds = [];
 
 export function renderTimetables(){
     let names = Object.keys(schedule);
@@ -14,7 +15,9 @@ export function renderTimetables(){
         return `<option ${n === picked ? "selected" : ""}>${n}</option>`;
     }).join("");
 
-    let teacherIds = [];
+     teacherIds = config.teachers.map(function(teacher){
+        return teacher.id;
+     })
 
     Object.keys(schedule).forEach(function (className){
         Object.values(schedule[className]).forEach(function(entry){
@@ -29,7 +32,18 @@ export function renderTimetables(){
     }
 
     let teacherOptions = teacherIds.map(function(id){
-return `<option value="${id}" ${id === pickedTeacher ? "selected" : ""}>${teacherName(id)}</option>`;    }).join("");
+return `<option value="${id}" ${id === pickedTeacher ? "selected" : ""}>${teacherName(id)}</option>`;    
+    }).join("");
+
+let dayOptions = config.days.map(function(day){
+    return `<option value="${day}">${day}</option>`;
+}).join("");
+
+let periodOptions = "";
+
+for (let p = 1; p <= config.periodsPerDay; p++){
+    periodOptions += `<option value="${p}">P${p}</option>`
+}
 
     panel.innerHTML = `
     <h2>Timetables</h2>
@@ -39,11 +53,16 @@ return `<option value="${id}" ${id === pickedTeacher ? "selected" : ""}>${teache
             <option value="class" ${view === "class" ? "selected" : ""}>Class timetable</option>
             <option value="teacher" ${view === "teacher" ? "selected" : ""}>Teacher timetable</option>
             <option value="all" ${view === "all" ? "selected" : ""}>All classes</option>
+            <option value="free" ${view === "free" ? "selected" : ""}>Find free teachers</option>
         </select>
     </label>
 
     <label id="classPicker">Class <select id="classPick">${options}</select></label>
     <label id="teacherPicker" hidden> Teacher <select id="teacherPick">${teacherOptions}</select></label>
+    <div id="freePicker" hidden>
+        <label>Day<select id="freeDay">${dayOptions}</select></label>
+        <label>Period <select id="freePeriod">${periodOptions}</select></label>
+    </div>
     <button type="button" id="printTimetable">Print / Save as PDF</button>
     <div id="gridBox"></div>
     `;
@@ -58,6 +77,9 @@ return `<option value="${id}" ${id === pickedTeacher ? "selected" : ""}>${teache
         renderTeacherGrid();
     })
 
+    document.getElementById("freeDay").addEventListener("change", renderFreeTeachers);
+    document.getElementById("freePeriod").addEventListener("change", renderFreeTeachers);
+
     document.getElementById("viewPick").addEventListener("change", function(e){
         view = e.target.value;
         showView()
@@ -69,20 +91,28 @@ return `<option value="${id}" ${id === pickedTeacher ? "selected" : ""}>${teache
         showView();
 }
 
+
+
+
 function showView(){
     let classPicker = document.getElementById("classPicker")
     let teacherPicker = document.getElementById("teacherPicker")
     let printButton = document.getElementById("printTimetable")
+    let freePicker = document.getElementById("freePicker")
 
     classPicker.hidden = view !== "class";
     teacherPicker.hidden = view !== "teacher";
-    printButton.hidden = view === "all";
+    freePicker.hidden = view !== "free";
+    printButton.hidden = view === "all" || view === "free";
 
     if (view === "class"){
         renderGrid();
     }
     else if (view === "teacher"){
         renderTeacherGrid();
+    }
+    else if (view === "free"){
+        renderFreeTeachers();
     }
     else {
              renderAllClasses();
@@ -121,6 +151,37 @@ function renderTeacherGrid(){
         return;
     }
     box.innerHTML = teacherGrid(pickedTeacher)
+}
+
+function renderFreeTeachers(){
+    let box = document.getElementById("gridBox");
+    let day = document.getElementById("freeDay").value;
+    let period = document.getElementById("freePeriod").value;
+    let slot = `${day} P${period}`;
+    let busyTeachers = [];
+
+    Object.keys(schedule).forEach(function(className){
+        let entry= schedule[className][slot];
+
+        if (entry && !busyTeachers.includes(entry.teacher)){
+            busyTeachers.push(entry.teacher);
+        }
+    })
+
+    let freeTeachers = teacherIds.filter(function(id){
+        return !busyTeachers.includes(id);
+    })
+
+    if (freeTeachers.length === 0){
+        box.innerHTML = `<p>No free teachers on ${day}, P${period}</p>`
+        return;
+    }
+
+    let names = freeTeachers.map(function(id){
+        return `<li>${teacherName(id)}</li>`
+    }).join("");
+
+    box.innerHTML = `<h3>Free teachers on ${day}, P${period}</h3><ul>${names}</ul>`
 }
 
 function teacherGrid(teacherId){
