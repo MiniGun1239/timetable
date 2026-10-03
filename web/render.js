@@ -85,10 +85,24 @@ function showView(){
         renderTeacherGrid();
     }
     else {
-        document.getElementById("gridBox").innerHTML = `<p>gonna make this next</p>`;
+             renderAllClasses();
     }
 }
 
+function renderAllClasses(){
+    let box = document.getElementById("gridBox")
+    let classNames = Object.keys(schedule)
+
+    if (classNames.length === 0){
+        box.innerHTML = "<p>No timetables yet</p>"
+        return
+    }
+
+    box.innerHTML = classNames.map(function(className){
+        return `<h3>${className}</h3>${grid(className)}`;
+    }).join("");
+
+}
 // lowk i am thinking of creating some art for this
 function renderGrid(){
     let box = document.getElementById("gridBox");
@@ -136,7 +150,7 @@ for (let p = 1; p <= config.periodsPerDay; p++){
                 return entry && entry.teacher === teacherId;
             })
 
-let cells = classes.map(function(className){                let entry = schedule[className][slot]
+    let cells = classes.map(function(className){                let entry = schedule[className][slot]
                 return `<b>${className}</b><small>${subjectName(entry.subject)}</small>`;
             }).join("");
 
