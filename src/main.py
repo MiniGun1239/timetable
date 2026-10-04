@@ -31,7 +31,7 @@ def main():
 
 def test():
     section = Section(1, 11, 'B')
-    teach = Teacher(1, "Himmothy", [1], section)
+    teach   = Teacher(1, "Himmothy", [1], section)
     english = Subject(1, "English", [section])
 
     print(section.print())
