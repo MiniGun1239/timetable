@@ -37,3 +37,44 @@ export let schedule = {
   },
 };
 
+export function setSchedule(source){
+    if (!source || typeof source !== "object" || Array.isArray(source)){
+        throw new Error("The timetable must be a JSON object.");
+    }
+
+    let converted = {};
+
+        Object.entries(source).forEach(function([className, days]){
+        if (!days || typeof days !== "object" || Array.isArray(days)){
+                  throw new Error("invalid timetable data for " + className);
+        }
+
+        converted[className] = {};
+
+                Object.entries(days).forEach(function([day, periods]){
+            if (!periods || typeof periods !== "object" || Array.isArray(periods)){
+                throw new Error("Invalid periods for " + className + " on " + day);
+            }
+
+      Object.entries(periods).forEach(function([period, lesson]){
+                if (lesson === null) return;
+
+                if (!lesson.Subject || !lesson.Teacher){
+                    throw new Error(
+                        "A lesson needs Subject and Teacher at " +
+                        className + ", " + day + " P" + period
+                    );
+                }
+
+
+                converted[className][day + " P" + period] = {
+                    subject: lesson.Subject,
+                    teacher: lesson.Teacher
+                };
+            });
+                });
+    });
+                
+
+    schedule = converted;
+}

@@ -1,11 +1,18 @@
 import { config } from "./store.js"
-import { schedule } from "./data.js"
+import { schedule, setSchedule } from "./data.js"
 
 const panel = document.getElementById("timetablesPanel");
 let picked = "";
 let view = "class";
 let pickedTeacher = "";
 let teacherIds = [];
+
+export function displayGeneratedSchedule(scheduleData){
+    setSchedule(scheduleData);
+    picked = "";
+    pickedTeacher = "";
+    renderTimetables();
+}
 
 export function renderTimetables(){
     let names = Object.keys(schedule);
@@ -47,7 +54,6 @@ for (let p = 1; p <= config.periodsPerDay; p++){
 
     panel.innerHTML = `
     <h2>Timetables</h2>
-
     <label>View
         <select id="viewPick">
             <option value="class" ${view === "class" ? "selected" : ""}>Class timetable</option>
@@ -96,9 +102,6 @@ for (let p = 1; p <= config.periodsPerDay; p++){
         renderFreeTeachers()
         showView();
 }
-
-
-
 
 function showView(){
     let classPicker = document.getElementById("classPicker")
@@ -338,3 +341,4 @@ function teacherName(id){
 
         return `<table class="grid">${header}${rows}</table>`
     }
+    
