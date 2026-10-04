@@ -1,11 +1,18 @@
 import { config } from "./store.js"
-import { schedule } from "./data.js"
+import { schedule, setSchedule } from "./data.js"
 
 const panel = document.getElementById("timetablesPanel");
 let picked = "";
 let view = "class";
 let pickedTeacher = "";
 let teacherIds = [];
+
+export function displayGeneratedSchedule(scheduleData){
+    setSchedule(scheduleData);
+    picked = "";
+    pickedTeacher = "";
+    renderTimetables();
+}
 
 export function renderTimetables(){
     let names = Object.keys(schedule);
@@ -334,3 +341,4 @@ function teacherName(id){
 
         return `<table class="grid">${header}${rows}</table>`
     }
+    
