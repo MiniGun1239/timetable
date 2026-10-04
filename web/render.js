@@ -53,18 +53,22 @@ for (let p = 1; p <= config.periodsPerDay; p++){
             <option value="class" ${view === "class" ? "selected" : ""}>Class timetable</option>
             <option value="teacher" ${view === "teacher" ? "selected" : ""}>Teacher timetable</option>
             <option value="all" ${view === "all" ? "selected" : ""}>All classes</option>
-            <option value="free" ${view === "free" ? "selected" : ""}>Find free teachers</option>
         </select>
     </label>
 
     <label id="classPicker">Class <select id="classPick">${options}</select></label>
     <label id="teacherPicker" hidden> Teacher <select id="teacherPick">${teacherOptions}</select></label>
-    <div id="freePicker" hidden>
-        <label>Day<select id="freeDay">${dayOptions}</select></label>
+<section class="freeTeacherFinder">
+    <h3>Find a free teacher</h3>
+    <p>Choose a day and period to see which teachers are available :D</p>
+    <div class="freeTeacherControls">
+        <label>Day <select id="freeDay">${dayOptions}</select></label>
         <label>Period <select id="freePeriod">${periodOptions}</select></label>
     </div>
-    <button type="button" id="printTimetable">Print / Save as PDF</button>
-    <div id="gridBox"></div>
+    <div id="freeResults" aria-live="polite"></div>
+</section>
+        <button type="button" id="printTimetable">Print / Save as PDF</button>
+        <div id="gridBox"></div>
     `;
 
     document.getElementById("classPick").addEventListener("change", function (e){
@@ -88,6 +92,7 @@ for (let p = 1; p <= config.periodsPerDay; p++){
     document.getElementById("printTimetable").addEventListener("click", function(){
         window.print();
     })
+        renderFreeTeachers()
         showView();
 }
 
@@ -98,12 +103,10 @@ function showView(){
     let classPicker = document.getElementById("classPicker")
     let teacherPicker = document.getElementById("teacherPicker")
     let printButton = document.getElementById("printTimetable")
-    let freePicker = document.getElementById("freePicker")
 
     classPicker.hidden = view !== "class";
     teacherPicker.hidden = view !== "teacher";
-    freePicker.hidden = view !== "free";
-    printButton.hidden = view === "all" || view === "free";
+    printButton.hidden = view === "all";
 
     if (view === "class"){
         renderGrid();
@@ -111,9 +114,7 @@ function showView(){
     else if (view === "teacher"){
         renderTeacherGrid();
     }
-    else if (view === "free"){
-        renderFreeTeachers();
-    }
+
     else {
              renderAllClasses();
     }
@@ -154,7 +155,7 @@ function renderTeacherGrid(){
 }
 
 function renderFreeTeachers(){
-    let box = document.getElementById("gridBox");
+    let box = document.getElementById("freeResults");
     let day = document.getElementById("freeDay").value;
     let period = document.getElementById("freePeriod").value;
     let slot = `${day} P${period}`;
