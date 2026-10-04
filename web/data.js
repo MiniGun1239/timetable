@@ -37,3 +37,8 @@ export let schedule = {
   },
 };
 
+
+
+export function setSchedule(nextSchedule){
+      schedule = nextSchedule;
+}
