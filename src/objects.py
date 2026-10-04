@@ -108,6 +108,10 @@ class Config:
 
 # --- BEGINNING OF TESTS ---
 def all_test():
+    section_test()
+    subject_test()
+    teacher_test()
+    config_test()
     pass
 
 
