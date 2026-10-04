@@ -119,11 +119,11 @@ def config_test():
     pass
 
 
-def teacher_test():
+def section_test():
     pass
 
 
-def section_test():
+def teacher_test():
     pass
 
 
