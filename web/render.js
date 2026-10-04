@@ -1,5 +1,5 @@
 import { config } from "./store.js"
-import { schedule, setSchedule } from "./data.js"
+import { schedule } from "./data.js"
 
 const panel = document.getElementById("timetablesPanel");
 let picked = "";
@@ -47,13 +47,6 @@ for (let p = 1; p <= config.periodsPerDay; p++){
 
     panel.innerHTML = `
     <h2>Timetables</h2>
-        <section class="scheduleImport">
-            <h3>Load generated timetable</h3>
-            <p>Choose a timetable JSON file to display it here</p>
-            <label for="scheduleFile">Timetable file</label>
-            <input type="file" id="scheduleFile" accept=".json,application/json">
-            <p id="scheduleMessage" aria-live="polite"></p>
-        </section>
     <label>View
         <select id="viewPick">
             <option value="class" ${view === "class" ? "selected" : ""}>Class timetable</option>
@@ -99,8 +92,6 @@ for (let p = 1; p <= config.periodsPerDay; p++){
     document.getElementById("printTimetable").addEventListener("click", function(){
         window.print();
     })
-
-    document.getElementById("scheduleFile").addEventListener("change", loadScheduleFile)
         renderFreeTeachers()
         showView();
 }
