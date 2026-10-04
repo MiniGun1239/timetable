@@ -151,6 +151,34 @@ select {
     background: #e8f0e3;
 }
 
+.freeTeacherFinder {
+    margin: 16px 0 24px;
+    padding: 16px;
+    border: 1px solid #EAE2D6;
+    border-left: 6px solid #8B9A6E;
+    border-radius: 6px;
+    background: #EEEEEE;
+}
+
+.freeTeacherFinder h3 {
+    margin-top: 0;
+    color: #8B9A6E;
+}
+
+.freeTeacherControls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.freeTeacherControls label {
+    margin: 0;
+}
+
+#freeResults {
+    margin-top: 12px;
+}
+
 /* i marked things as important cause there are so many things in it*/
 @media print {
     @page {
@@ -161,6 +189,7 @@ select {
     header,
     #setupPanel,
     #generatePanel,
+    .freeTeacherFinder,
     #timetablesPanel > label,
     #printTimetable {
         display: none !important;
