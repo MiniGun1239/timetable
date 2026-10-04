@@ -52,6 +52,7 @@ for (let p = 1; p <= config.periodsPerDay; p++){
         <select id="viewPick">
             <option value="class" ${view === "class" ? "selected" : ""}>Class timetable</option>
             <option value="teacher" ${view === "teacher" ? "selected" : ""}>Teacher timetable</option>
+            <option value="workload" ${view === "workload" ? "selected" : ""}>Teacher workload</option>
             <option value="all" ${view === "all" ? "selected" : ""}>All classes</option>
         </select>
     </label>
@@ -106,7 +107,7 @@ function showView(){
 
     classPicker.hidden = view !== "class";
     teacherPicker.hidden = view !== "teacher";
-    printButton.hidden = view === "all";
+    printButton.hidden = view === "all" || view === "workload";
 
     if (view === "class"){
         renderGrid();
@@ -114,7 +115,9 @@ function showView(){
     else if (view === "teacher"){
         renderTeacherGrid();
     }
-
+    else if (view === "workload"){
+    renderWorkload();
+    }
     else {
              renderAllClasses();
     }
@@ -184,6 +187,65 @@ function renderFreeTeachers(){
 
     box.innerHTML = `<h3>Free teachers on ${day}, P${period}</h3><ul>${names}</ul>`
 }
+
+// gonna add this cause why not lol
+function renderWorkload(){
+
+        let box = document.getElementById("gridBox");
+
+    if (!teacherIds.length){
+        box.innerHTML = "<p>No teachers found.</p>";
+        return;
+    }
+
+        let cards = teacherIds.map(function(id){
+        let total = 0;
+        let daily = {};
+
+        Object.keys(schedule).forEach(function(className){
+            Object.entries(schedule[className]).forEach(function([slot, entry]){
+            if (!entry || entry.teacher !== id) return;
+
+                            let day = slot.split(" ")[0];
+                total++;
+                daily[day] = (daily[day] || 0) + 1;
+            });
+        });
+
+        let teacher = config.teachers.find(function(item){
+            return item.id === id;
+        });
+
+        let limit = teacher ? teacher.maxPerDay : config.periodsPerDay;
+        let overloadedDays = Object.keys(daily).filter(function(day){
+            return daily[day] > limit;
+        });
+
+        let status = overloadedDays.length ? "Over daily limit: " + overloadedDays.map(function(day){
+                return day + " (" + daily[day] + ")";
+            }).join(", ") : "Within daily limit";
+
+                    let percent = Math.min(
+            100,
+            Math.round(total / Math.max(1, config.days.length * limit) * 100)
+        );
+
+                return `
+            <article class="workloadCard">
+                <h3>${teacherName(id)}</h3>
+                <p><strong>${total}</strong> periods this week</p>
+                <div class="workloadTrack">
+                    <div class="workloadFill" style="width: ${percent}%"></div>
+                </div>
+                <p>Daily limit: ${limit} periods</p>
+                <p class="${overloadedDays.length ? "error" : "success"}">${status}</p>
+            </article>
+            `;
+        }).join("");
+
+            box.innerHTML = `<div class="workloadGrid">${cards}</div>`;
+
+} 
 
 function teacherGrid(teacherId){
     let breakAfter = {};
