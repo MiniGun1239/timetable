@@ -150,3 +150,51 @@ select {
     color: #35512f;
     background: #e8f0e3;
 }
+
+/* i marked things as important cause there are so many things in it*/
+@media print {
+    @page {
+        size: landscape;
+        margin: 12px;
+    }
+
+    header,
+    #setupPanel,
+    #generatePanel,
+    #timetablesPanel > label,
+    #printTimetable {
+        display: none !important;
+    }
+
+    main {
+        padding: 0;
+    }
+
+    #timetablesPanel {
+        display: block !important;
+    }
+
+    .grid {
+        width: 100%;
+        border-collapse: collapse;
+        break-inside: avoid;
+    }
+
+    .grid th,
+    .grid td {
+        min-width: 0;
+        padding: 5px;
+        border: 1px solid #555;
+    }
+
+    .grid th {
+        color: #111 !important;
+        background: #eee !important;
+    }
+
+    .breakRow td {
+        color: #111 !important;
+        background: #ddd !important;
+    }
+}
+
