@@ -227,3 +227,41 @@ select {
     }
 }
 
+.workloadGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.workloadCard {
+    padding: 16px;
+    border: 1px solid #EAE2D6;
+    border-radius: 6px;
+    background: #EEEEEE;
+}
+
+.workloadCard h3 {
+    margin-top: 0;
+    color: #8B9A6E;
+}
+
+.workloadTrack {
+    height: 12px;
+    overflow: hidden;
+    border-radius: 6px;
+    background: #EAE2D6;
+}
+
+.workloadFill {
+    height: 100%;
+    background: #8B9A6E;
+}
+
+.workloadCard .success {
+    color: #35512f;
+}
+
+.workloadCard .error {
+    color: #7a241d;
+}
