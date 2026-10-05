@@ -72,6 +72,8 @@ export function renderSetup(){
 
     panel.innerHTML = `
     <h2>School Setup</h2>
+    <div class="setupLayout">
+        <div class="setupForm">
 
     <label>School name <input id="schoolName" value="${esc(config.school)}"> </label>
 
@@ -112,6 +114,9 @@ export function renderSetup(){
 
         <button type="button" id="checkSetup">Check setup</button>
         <p id="setupMessage"></p>
+        </div>
+        <img class="setupIllustration" src="cool-timetable-art.png" alt="cool art">
+        </div>
     `;
 
     listen();
