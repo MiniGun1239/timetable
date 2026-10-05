@@ -42,39 +42,37 @@ export function setSchedule(source){
         throw new Error("The timetable must be a JSON object.");
     }
 
-    let converted = {};
-
-        Object.entries(source).forEach(function([className, days]){
-        if (!days || typeof days !== "object" || Array.isArray(days)){
+        Object.entries(source).forEach(function([className, slots]){
+        if (!slots || typeof slots !== "object" || Array.isArray(slots)){
                   throw new Error("invalid timetable data for " + className);
         }
 
-        converted[className] = {};
-
-                Object.entries(days).forEach(function([day, periods]){
-            if (!periods || typeof periods !== "object" || Array.isArray(periods)){
-                throw new Error("Invalid periods for " + className + " on " + day);
+                Object.values(slots).forEach(function(lesson){
+            if (lesson === null) return;
+            
+            if (  !lesson || typeof lesson.subject !== "string" || typeof lesson.teacher !== "string"){
+                throw new Error ("each lesson needs lowercase subject and teacher fields")
             }
 
-      Object.entries(periods).forEach(function([period, lesson]){
-                if (lesson === null) return;
+    //   Object.entries(periods).forEach(function([period, lesson]){
+    //             if (lesson === null) return;
 
-                if (!lesson.Subject || !lesson.Teacher){
-                    throw new Error(
-                        "A lesson needs Subject and Teacher at " +
-                        className + ", " + day + " P" + period
-                    );
-                }
+    //             if (!lesson.Subject || !lesson.Teacher){
+    //                 throw new Error(
+    //                     "A lesson needs Subject and Teacher at " +
+    //                     className + ", " + day + " P" + period
+    //                 );
+    //             }
 
 
-                converted[className][day + " P" + period] = {
-                    subject: lesson.Subject,
-                    teacher: lesson.Teacher
-                };
-            });
+    //             converted[className][day + " P" + period] = {
+    //                 subject: lesson.Subject,
+    //                 teacher: lesson.Teacher
+            //     };
+            // });
                 });
     });
                 
 
-    schedule = converted;
+    schedule = source;
 }
