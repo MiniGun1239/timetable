@@ -1,3 +1,5 @@
+import test
+
 class Section:
     def __init__(
             self,
@@ -27,7 +29,6 @@ class Subject:
             self,
             id: int,
             name: str,
-            sections: list[Section],
             back2back: bool = False,
             noback2back: bool = False
     ) -> None:
@@ -37,7 +38,6 @@ class Subject:
 
         self.id = id
         self.name = name
-        self.sections = sections
 
         self.back2back = back2back
         self.noback2back = noback2back
@@ -45,11 +45,8 @@ class Subject:
 
     def print(self):
         b2b_info = f"{', back2back: yes' if self.back2back else ', noback2back: yes' if self.noback2back else ''}"
-        sections = []
-        for i in self.sections:
-            sections.append(i.get())
 
-        return f"Subject id: {self.id}, name: {self.name}, sections: {sections}{b2b_info}"
+        return f"Subject id: {self.id}, name: {self.name}{b2b_info}"
 
     def is_back2back(self) -> bool:
         return self.back2back
@@ -65,7 +62,7 @@ class Teacher:
             self,
             id: int,
             name: str,
-            subject_ids: list,
+            subject_ids: list[int],
             section: Section
     ) -> None:
         self.id = id
@@ -103,6 +100,12 @@ class Config:
         return
 
 
+class Timetable:
+    def __init__(self, section: Section) -> None:
+        self.section = section
+        self.order = {}
+
+
 # --- END OF CLASSES ---
 
 
@@ -128,7 +131,9 @@ def teacher_test():
 
 
 def subject_test():
-    pass
+    output = test.subject_get()
+
+    
 
 
 # --- END OF TESTS ---
