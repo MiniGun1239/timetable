@@ -277,6 +277,20 @@ select {
     min-width: 0;
 }
 
+.setupSection {
+    margin-bottom: 10px;
+    padding: 10px 14px;
+    border: 1px solid #EAE2D6;
+    border-radius: 6px;
+    background: #EEEEEE;
+}
+
+.setupSection summary {
+    color: #8B9A6E;
+    font-weight: bold;
+    cursor: pointer;
+}
+
 .setupIllustration {
     display: block;
     width: 240%;
@@ -286,7 +300,7 @@ select {
     /*this blend line made it look fine*/
     mix-blend-mode: multiply;
     /*omg why am i writing such bad css*/
-    transform: translate(-300px, -70px);
+    transform: translateY(-70px);
     /*omg im so stupid lol*/
     /* transform: translateY(-70px); */
 }
