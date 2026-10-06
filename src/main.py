@@ -1,9 +1,12 @@
+# --- IMPORTS ---
 from flask import Flask, render_template
 
-
+# --- Class Imports ---
 from objects import *
+# --- End of Hitler
 
 
+# --- Flask Stuff ---
 app = Flask(
     __name__,
     template_folder='../web',
@@ -11,7 +14,13 @@ app = Flask(
     static_url_path='',
 )
 
+def run():
+    app.run(debug=True)
+    return
+# --- END OF Flask Initializing
 
+
+# --- HTML Routing stuff ---
 @app.route('/')
 def hello_world():
     return render_template('index.html')
@@ -21,10 +30,6 @@ def hello_world():
 def generate():
     pass
 
-
-def run():
-    app.run(debug=True)
-    return
 
 
 def main():
