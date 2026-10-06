@@ -1,9 +1,6 @@
 # --- IMPORTS ---
 from flask import Flask, render_template
 from pathlib import Path
-
-# --- Class Imports ---
-from objects import *
 # --- End of Hitler
 
 
