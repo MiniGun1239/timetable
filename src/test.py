@@ -1,4 +1,7 @@
-from objects import *
+from objects.config import Config
+from objects.subject import Subject
+from objects.section import Section
+from objects.teacher import Teacher
 
 def all_test():
     section_test()

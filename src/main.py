@@ -1,19 +1,7 @@
 # --- IMPORTS ---
 from flask import Flask, render_template
-from pathlib import Path
+from constants import *
 # --- End of Hitler
-
-
-# --- Path Initializing stuff for stuff idk ---
-DATA = Path(__file__).parent / 'data'
-
-TEACHER_DATA = Path(__file__).parent / 'teacher.json'
-SECTION_DATA = Path(__file__).parent / 'section.json'
-SUBJECT_DATA = Path(__file__).parent / 'subject.json'
-CONFIG = Path(__file__).parent / 'config.json'
-
-WEB_DIR = Path(__file__).parent.parent / 'web'
-# --- Path initializing done ig
 
 
 # --- Flask Stuff ---
