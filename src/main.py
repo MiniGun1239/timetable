@@ -17,6 +17,7 @@ CONFIG = Path(__file__).parent / 'config.json'
 
 # --- Flask Stuff ---
 WEB_DIR = Path(__file__).parent.parent / 'web'
+
 app = Flask(
     __name__,
     template_folder=WEB_DIR,
@@ -30,7 +31,7 @@ def run():
 # --- END OF Flask Initializing
 
 
-# --- HTML Routing stuff ---
+# --- HTML ROUTING stuff ---
 @app.route('/')
 def hello_world():
     return render_template('index.html')
@@ -39,16 +40,7 @@ def hello_world():
 @app.route('/api/generate POST')
 def generate():
     pass
-
-
-def test():
-    section = Section(1, 11, 'B')
-    teach   = Teacher(1, "Himmothy", [1], section)
-    english = Subject(1, "English", [section])
-
-    print(section.print())
-    print(teach.print())
-    print(english.print())
+# --- END OF HTML ROUTING ---
 
 
 if __name__ == '__main__':
