@@ -19,8 +19,8 @@ CONFIG = Path(__file__).parent / 'config.json'
 WEB_DIR = Path(__file__).parent.parent / 'web'
 app = Flask(
     __name__,
-    template_folder='../web',
-    static_folder='../web',
+    template_folder=WEB_DIR,
+    static_folder=WEB_DIR,
     static_url_path='',
 )
 
@@ -40,10 +40,6 @@ def hello_world():
 def generate():
     pass
 
-
-
-def main():
-    pass
 
 def test():
     section = Section(1, 11, 'B')
