@@ -279,18 +279,26 @@ select {
 
 .setupIllustration {
     display: block;
-    width: 100%;
-    max-width: 400px;
+    width: 240%;
+    max-width: 850px;
     height: auto;
+    justify-self: end;
+    /*this blend line made it look fine*/
+    mix-blend-mode: multiply;
+    /*omg why am i writing such bad css*/
+    transform: translate(-300px, -70px);
+    /*omg im so stupid lol*/
+    /* transform: translateY(-70px); */
 }
 
-@media (max-width: 700px){
+@media (max-width: 800px){
     .setupLayout {
         grid-template-columns: 1fr;
     }
 
     .setupIllustration {
-        max-width: 280px;
+        width: 100%;
+        max-width: 500px;
         margin: auto;
     }
 }
