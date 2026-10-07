@@ -1,4 +1,4 @@
-from objects.section import Section
+from objects import Section
 
 
 class Teacher:
