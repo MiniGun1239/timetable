@@ -34,45 +34,39 @@ class Subject:
     # add more stuff idk wwhat tho
 
 
-def samples() -> list[Subject]:
-    output = []
+def samples() -> dict[int, Subject]:
+    output = {}
 
-    output.append(
-        Subject(1, "English", times_per_week=5)
+    output.update(
+        {"English1": Subject(1, "English", times_per_week=5)}
     )
-    output.append(
-        Subject(2, "Math / IP / PE", times_per_week=6)
+    output.update(
+        {"Math1": Subject(2, "Math / IP / PE", times_per_week=6)}
     )
-    output.append(
-        Subject(3, "Physics", times_per_week=6)
+    output.update(
+        {"Physics1": Subject(3, "Physics", times_per_week=6)}
     )
-    output.append(
-        Subject(4, "Chemistry", times_per_week=6)
+    output.update(
+        {"Chemistry1": Subject(4, "Chemistry", times_per_week=6)}
     )
-    output.append(
-        Subject(5, "Bio / CS", times_per_week=6)
+    output.update(
+        {"Biology1": Subject(5, "Bio / CS", times_per_week=6)}
     )
-    output.append(
-        Subject(6, "Psychology", times_per_week=3)
+    output.update(
+        {"Psychology1": Subject(6, "Psychology", times_per_week=3)}
     )
-    output.append(
-        Subject(7, "WB / PE", times_per_week=2)
+    output.update(
+        {"PE1": Subject(7, "WB / PE", times_per_week=2)}
     )
-    output.append(
-        Subject(8, "Bio / CS LAB", times_per_week=2)
+    output.update(
+        {"Biology LAB": Subject(8, "Bio / CS LAB", times_per_week=2)}
     )
-    output.append(
-        Subject(9, "Physics LAB", times_per_week=2)
+    output.update(
+        {"Physics LAB": Subject(9, "Physics LAB", times_per_week=2)}
     )
-    output.append(
-        Subject(10, "Chemistry LAB", times_per_week=2)
+    output.update(
+        {"Chemistry LAB": Subject(10, "Chemistry LAB", times_per_week=2)}
     )
-
-    periods = 0
-    for subject in output:
-        periods += subject.times_per_week
-
-    print(f"Subjects: {periods}")
 
     return output
 

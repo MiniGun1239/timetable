@@ -1,4 +1,4 @@
-from objects import Section
+from objects import subject, Subject
 
 
 class Teacher:
@@ -20,3 +20,14 @@ class Teacher:
 
     # add somehow routing this
 
+
+def samples():
+    output = []
+
+    subjects = subject.samples()
+
+    # ill just add my teacher names
+
+    output.append(
+        Teacher(1, "Sabin da goat", [subjects[0].id], )
+    )
