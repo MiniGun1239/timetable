@@ -1,35 +1,43 @@
+from enum import Enum, auto
+
+
+class BackToBackPolicy(Enum):
+    ANY = auto()
+    FORCE = auto()
+    FORBID = auto()
+
 class Subject:
     def __init__(
             self,
             id: int,
             name: str,
-            back2back: bool = False,
-            noback2back: bool = False,
+            back2back: BackToBackPolicy = BackToBackPolicy.ANY,
             times_per_week: int = 1,
     ) -> None:
-        if back2back and noback2back:
-            print("Invalid, cant have both back to back and not back to back")
-            raise ValueError
+
 
         self.id = id
         self.name = name
 
         self.back2back = back2back
-        self.noback2back = noback2back
 
         self.times_per_week = times_per_week
         return
 
-    def print(self):
-        b2b_info = f"{', back2back: yes' if self.back2back else ', noback2back: yes' if self.noback2back else ''}"
+    def __repr__(self):
+        b2b_info = ", back2back: required" \
+            if self.back2back.value == BackToBackPolicy.FORCE \
+            else ", back2back: forbidden" \
+            if self.back2back.value == BackToBackPolicy.FORBID \
+            else ""
 
         return f"Subject id: {self.id}, name: {self.name}{b2b_info}, times per week: {self.times_per_week}"
 
     def is_back2back(self) -> bool:
-        return self.back2back
+        return True if self.back2back == BackToBackPolicy.FORCE else False
 
     def is_noback2back(self) -> bool:
-        return self.noback2back
+        return True if self.back2back == BackToBackPolicy.FORBID else False
 
     # add more stuff idk wwhat tho
 
