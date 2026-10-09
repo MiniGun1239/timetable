@@ -37,42 +37,25 @@ export let schedule = {
   },
 };
 
-export function setSchedule(source){
-    if (!source || typeof source !== "object" || Array.isArray(source)){
-        throw new Error("The timetable must be a JSON object.");
-    }
 
-        Object.entries(source).forEach(function([className, slots]){
-        if (!slots || typeof slots !== "object" || Array.isArray(slots)){
-                  throw new Error("invalid timetable data for " + className);
-        }
+// export function setSchedule(source){
 
-                Object.values(slots).forEach(function(lesson){
-            if (lesson === null) return;
-            
-            if (  !lesson || typeof lesson.subject !== "string" || typeof lesson.teacher !== "string"){
-                throw new Error ("each lesson needs lowercase subject and teacher fields")
-            }
+//     let converted = {};
 
-    //   Object.entries(periods).forEach(function([period, lesson]){
-    //             if (lesson === null) return;
+//         Object.entries(source).forEach(function([className, days]){
+//             converted[className] = {};
 
-    //             if (!lesson.Subject || !lesson.Teacher){
-    //                 throw new Error(
-    //                     "A lesson needs Subject and Teacher at " +
-    //                     className + ", " + day + " P" + period
-    //                 );
-    //             }
+//             Object.entries(days).forEach(function([day, periods]){
+//                 Object.entries(periods).forEach(function([period, lesson]){
+//                     converted[className][day + " " + period] = lesson;
+//                 });
+//             });
+//         })
+//     schedule = converted;
+// }
 
 
-    //             converted[className][day + " P" + period] = {
-    //                 subject: lesson.Subject,
-    //                 teacher: lesson.Teacher
-            //     };
-            // });
-                });
-    });
-                
-
+// bruh idk, might change, idk, this shi is so confusing
+export function setSchedule(source) {
     schedule = source;
 }

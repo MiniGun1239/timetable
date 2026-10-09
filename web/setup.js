@@ -1,6 +1,7 @@
 import { config, newId, saveConfig } from "./store.js";
 
 const panel = document.getElementById("setupPanel");
+let openSetupSection = "school";
 
 panel.addEventListener("input", saveConfig);
 panel.addEventListener("change", saveConfig);
@@ -72,47 +73,60 @@ export function renderSetup(){
 
     panel.innerHTML = `
     <h2>School Setup</h2>
-
+    <div class="setupLayout">
+        <div class="setupForm">
+    <details class="setupSection" name="setupSections" data-section="school" ${openSetupSection === "school" ? "open" : ""}>
+        <summary>School details</summary>
     <label>School name <input id="schoolName" value="${esc(config.school)}"> </label>
 
     <label>Periods per day <input type="number" id="periodsPerDay" value="${config.periodsPerDay}" min="1"> </label>
 
     <label>Period length (minutes) <input type="number" id="periodMinutes" value="${config.periodMinutes}" min="1"> </label>
+    </details>
 
-    <h3>Teaching days </h3>
-    ${dayBoxes}
+        <details class="setupSection" name="setupSections" data-section="days" ${openSetupSection === "days" ? "open" : ""}>
+        <summary>Teaching days</summary>
+        ${dayBoxes}
+    </details>
 
-    <h3>Breaks</h3>
-
-    <div id="breakList"> ${config.breaks.map(breakRow).join("")}
-        </div>
-
+    <details class="setupSection" name="setupSections" data-section="breaks" ${openSetupSection === "breaks" ? "open" : ""}>
+        <summary>Breaks</summary>
+        <div id="breakList">${config.breaks.map(breakRow).join("")}</div>
         <button type="button" id="addBreak">Add break</button>
+    </details>
 
-        <h3>Teachers</h3>
+        <details class="setupSection" name="setupSections" data-section="teachers" ${openSetupSection === "teachers" ? "open" : ""}>
+            <summary>Teachers</summary>
+            <div id="teacherList">${config.teachers.map(teacherRow).join("")}</div>
+            <button type="button" id="addTeacher">Add teacher</button>
+        </details>
 
-        <div id="teacherList"> ${config.teachers.map(teacherRow).join("")}
-        </div>
+        <details class="setupSection" name="setupSections" data-section="subjects" ${openSetupSection === "subjects" ? "open" : ""}>
+            <summary>Subjects</summary>
+            <div id="subjectList">${config.subjects.map(subjectRow).join("")}</div>
+            <button type="button" id="addSubject">Add subject</button>
+        </details>
 
-        <button type="button" id="addTeacher">Add teacher</button>
-
-        <h3>Subjects</h3>
-
-        <div id="subjectList"> ${config.subjects.map(subjectRow).join("")}
-        </div>
-
-        <button type="button" id="addSubject">Add subject</button>
-
-        <h3>Grades and Sections</h3>
-
-        <div id="gradeList"> ${config.grades.map(gradeBlock).join("")}
-        </div>
-
-        <button type="button" id="addGrade">Add grade</button>
+        <details class="setupSection" name="setupSections" data-section="grades" ${openSetupSection === "grades" ? "open" : ""}>
+            <summary>Grades and Sections</summary>
+            <div id="gradeList">${config.grades.map(gradeBlock).join("")}</div>
+            <button type="button" id="addGrade">Add grade</button>
+        </details>
 
         <button type="button" id="checkSetup">Check setup</button>
         <p id="setupMessage"></p>
+        </div>
+        <img class="setupIllustration" src="cool-timetable-art.png" alt="cool art">
+        </div>
     `;
+
+    panel.querySelectorAll(".setupSection").forEach(function(section){
+        section.addEventListener("toggle", function(){
+            if (section.open){
+                openSetupSection = section.dataset.section;
+            }
+        })
+    })
 
     listen();
 }
