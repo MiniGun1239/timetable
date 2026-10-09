@@ -75,6 +75,7 @@ for (let p = 1; p <= config.periodsPerDay; p++){
     <div id="freeResults" aria-live="polite"></div>
 </section>
         <button type="button" id="printTimetable">Print / Save as PDF</button>
+        <button type="button" id="downloadJson">Download JSON</button>
         <div id="gridBox"></div>
     `;
 
@@ -99,6 +100,18 @@ for (let p = 1; p <= config.periodsPerDay; p++){
     document.getElementById("printTimetable").addEventListener("click", function(){
         window.print();
     })
+
+    document.getElementById("downloadJson").addEventListener("click", function(){
+        let file = new Blob([JSON.stringify(schedule, null, 2)], {
+            type: "application/json"
+        })
+
+        let link = document.createElement("a");
+        link.href = URL.createObjectURL(file);
+        link.download = "timetable.json"
+        link.click();
+    })
+
         renderFreeTeachers()
         showView();
 }
