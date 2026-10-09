@@ -165,7 +165,30 @@ function renderGrid(){
         box.innerHTML = "<p>No timetable yet</p>"
         return;
     }
-        box.innerHTML = grid(picked);
+        box.innerHTML = "<p>Click a timetable cell to edit it</p>" + grid(picked);
+
+        box.querySelectorAll(".editCell").forEach(function(cell){
+            cell.addEventListener("click", function(){
+                let slot = cell.dataset.slot;
+                let current = schedule[picked][slot] || { subject: "", teacher: ""};
+
+                let subject = prompt("Enter subject ID:", current.subject);
+                if (subject == null) return;
+
+                let teacher = prompt("Enter teacher ID:", current.teacher);
+                if (teacher == null) return;
+                
+                if (!subject.trim() || !teacher.trim()){
+                    alert("Enter subject ID and a teacher ID")
+                    return;
+                }
+                schedule[picked][slot] = {
+                    subject: subject.trim(),
+                    teacher: teacher.trim()
+                }
+                renderTimetables();
+            })
+        })
 }
 
 function renderTeacherGrid(){
@@ -257,6 +280,7 @@ function renderWorkload(){
     if (!teacherIds.length){
         box.innerHTML = "<p>No teachers found.</p>";
         return;
+    
     }
 
         let cards = teacherIds.map(function(id){
@@ -384,10 +408,13 @@ function teacherName(id){
         for (let p = 1; p <= periods; p++){
             rows += `<tr><th>P${p}</th>`;
             config.days.forEach(function (d){
-                let entry = schedule[className][`${d} P${p}`];
+                let slot = `${d} P${p}`;
+                // cleaner lol
+                let entry = schedule[className][slot];
                 let subject = entry ? subjectName(entry.subject) : "";
                 let teacher = entry ? teacherName(entry.teacher) : "";
-                rows += `<td><b>${subject}</b><small>${teacher}</small></td>`;
+                // looks clean right?
+                rows += `<td class="editCell" data-slot="${slot}"><b>${subject}</b><small>${teacher}</small></td>`;
 
             })
             rows += "</tr>";
