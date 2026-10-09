@@ -24,7 +24,7 @@ def hello_world():
     return render_template('index.html')
 
 
-@app.route('/api/generate POST')
+@app.route('/api/generate', methods=['POST'])
 def generate():
     pass
 # --- END OF HTML ROUTING ---

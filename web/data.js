@@ -37,20 +37,25 @@ export let schedule = {
   },
 };
 
-// ill remove this comments dw
 
-export function setSchedule(source){
+// export function setSchedule(source){
 
-    let converted = {};
+//     let converted = {};
 
-        Object.entries(source).forEach(function([className, days]){
-            converted[className] = {};
+//         Object.entries(source).forEach(function([className, days]){
+//             converted[className] = {};
 
-            Object.entries(days).forEach(function([day, periods]){
-                Object.entries(periods).forEach(function([period, lesson]){
-                    converted[className][day + " " + period] = lesson;
-                });
-            });
-        })
-    schedule = converted;
+//             Object.entries(days).forEach(function([day, periods]){
+//                 Object.entries(periods).forEach(function([period, lesson]){
+//                     converted[className][day + " " + period] = lesson;
+//                 });
+//             });
+//         })
+//     schedule = converted;
+// }
+
+
+// bruh idk, might change, idk, this shi is so confusing
+export function setSchedule(source) {
+    schedule = source;
 }
