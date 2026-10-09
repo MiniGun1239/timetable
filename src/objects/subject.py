@@ -1,12 +1,20 @@
-from enum import Enum, auto
+import json
+import weakref
+from dataclasses import dataclass
+from enum import Enum
+from constants import SUBJECT_DATA
 
 
-class BackToBackPolicy(Enum):
-    ANY    = auto()
-    FORCE  = auto()
-    FORBID = auto()
+class BackToBackPolicy(Enum, str):
+    ANY    = "ANY"
+    FORCE  = "FORCE"
+    FORBID = "FORBID"
 
+
+@dataclass
 class Subject:
+    _instances = weakref.WeakSet()
+
     def __init__(
             self,
             id: int,
@@ -14,8 +22,6 @@ class Subject:
             back2back: BackToBackPolicy = BackToBackPolicy.ANY,
             times_per_week: int = 1,
     ) -> None:
-
-
         self.id = id
         self.name = name
 
@@ -34,7 +40,28 @@ class Subject:
         return f"Subject id: {self.id}, name: {self.name}{b2b_info}, times per week: {self.times_per_week}"
 
     def b2b(self) -> BackToBackPolicy:
-        return self.back2back.value
+        return self.back2back
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "back2back": self.back2back.value,
+            "times_per_week": self.times_per_week
+        }
+
+    @classmethod
+    def deserialize(cls, data: dict):
+        return cls(
+            data["id"],
+            data["name"],
+            back2back=BackToBackPolicy(data["back2back"]),
+            times_per_week=data["times_per_week"]
+        )
+
+    @classmethod
+    def getInstances(cls):
+        return cls._instances
 
     # add more stuff idk wwhat tho
 
@@ -48,13 +75,14 @@ def samples() -> dict[str, Subject]:
         "Biology1"      : Subject(5,  "Bio / CS",       times_per_week=6),
         "Psychology1"   : Subject(6,  "Psychology",     times_per_week=3),
         "PE1"           : Subject(7,  "WB / PE",        times_per_week=2),
-        "Biology LAB"   : Subject(8,  "Bio / CS LAB",   times_per_week=2),
-        "Physics LAB"   : Subject(9,  "Physics LAB",    times_per_week=2),
-        "Chemistry LAB" : Subject(10, "Chemistry LAB",  times_per_week=2)
+        "Biology LAB"   : Subject(8,  "Bio / CS LAB",   times_per_week=2, back2back=BackToBackPolicy.FORCE),
+        "Physics LAB"   : Subject(9,  "Physics LAB",    times_per_week=2, back2back=BackToBackPolicy.FORCE),
+        "Chemistry LAB" : Subject(10, "Chemistry LAB",  times_per_week=2, back2back=BackToBackPolicy.FORCE),
     }
 
 if __name__ == "__main__":
     subjects = samples()
     for key, subject in subjects.items():
         print(f"{key}: {subject}")
+        json.dumps()
 
