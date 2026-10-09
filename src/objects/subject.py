@@ -85,5 +85,4 @@ if __name__ == "__main__":
     subjects = samples()
     for key, subject in subjects.items():
         print(f"{key}: {subject}")
-        json.dumps()
 
