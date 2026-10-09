@@ -74,6 +74,10 @@ for (let p = 1; p <= config.periodsPerDay; p++){
     </div>
     <div id="freeResults" aria-live="polite"></div>
 </section>
+    <section>
+        <h3>Teacher conflict check</h3>
+        <div id="conflictResults"></div>
+    </section>
         <button type="button" id="printTimetable">Print / Save as PDF</button>
         <button type="button" id="downloadJson">Download JSON</button>
         <div id="gridBox"></div>
@@ -113,6 +117,7 @@ for (let p = 1; p <= config.periodsPerDay; p++){
     })
 
         renderFreeTeachers()
+        renderConflicts()
         showView();
 }
 
@@ -160,7 +165,30 @@ function renderGrid(){
         box.innerHTML = "<p>No timetable yet</p>"
         return;
     }
-        box.innerHTML = grid(picked);
+        box.innerHTML = "<p>Click a timetable cell to edit it</p>" + grid(picked);
+
+        box.querySelectorAll(".editCell").forEach(function(cell){
+            cell.addEventListener("click", function(){
+                let slot = cell.dataset.slot;
+                let current = schedule[picked][slot] || { subject: "", teacher: ""};
+
+                let subject = prompt("Enter subject ID:", current.subject);
+                if (subject == null) return;
+
+                let teacher = prompt("Enter teacher ID:", current.teacher);
+                if (teacher == null) return;
+                
+                if (!subject.trim() || !teacher.trim()){
+                    alert("Enter subject ID and a teacher ID")
+                    return;
+                }
+                schedule[picked][slot] = {
+                    subject: subject.trim(),
+                    teacher: teacher.trim()
+                }
+                renderTimetables();
+            })
+        })
 }
 
 function renderTeacherGrid(){
@@ -204,6 +232,46 @@ function renderFreeTeachers(){
     box.innerHTML = `<h3>Free teachers on ${day}, P${period}</h3><ul>${names}</ul>`
 }
 
+// so this might be a part of python, but ill do it as a seperate feature too lol
+
+function renderConflicts(){
+    let box = document.getElementById("conflictResults");
+    let conflicts = [];
+
+    config.days.forEach(function(day){
+        for (let p = 1; p <= config.periodsPerDay; p++){
+            let teachersHere = {};
+
+            Object.keys(schedule).forEach(function(className){
+                let entry = schedule[className][`${day} P${p}`]
+
+                if (entry) {
+                    if (!teachersHere[entry.teacher]){
+                        teachersHere[entry.teacher] = [];
+                    }
+                    teachersHere[entry.teacher].push(className);
+                }
+            })
+            Object.keys(teachersHere).forEach(function(teacherId){
+                if (teachersHere[teacherId].length > 1){
+                    conflicts.push(
+                        teacherName(teacherId) + " is assigned to " + teachersHere[teacherId].join(" and ") + " on " + day + ", P" + p
+                    )
+                }
+            })
+        }
+    })
+    if (conflicts.length === 0){
+        box.innerHTML = `<p class="validationMessage success">No teacher conflicts found</p>`
+    }
+    else {
+        box.innerHTML = `<p class="validationMessage error">Teacher conflicts found:</p><ul>` + conflicts.map(function(conflict){
+return "<li>" + conflict + "</li>";
+        }).join("") + "</ul>"
+    }
+}
+
+
 // gonna add this cause why not lol
 function renderWorkload(){
 
@@ -212,6 +280,7 @@ function renderWorkload(){
     if (!teacherIds.length){
         box.innerHTML = "<p>No teachers found.</p>";
         return;
+    
     }
 
         let cards = teacherIds.map(function(id){
@@ -339,10 +408,13 @@ function teacherName(id){
         for (let p = 1; p <= periods; p++){
             rows += `<tr><th>P${p}</th>`;
             config.days.forEach(function (d){
-                let entry = schedule[className][`${d} P${p}`];
+                let slot = `${d} P${p}`;
+                // cleaner lol
+                let entry = schedule[className][slot];
                 let subject = entry ? subjectName(entry.subject) : "";
                 let teacher = entry ? teacherName(entry.teacher) : "";
-                rows += `<td><b>${subject}</b><small>${teacher}</small></td>`;
+                // looks clean right?
+                rows += `<td class="editCell" data-slot="${slot}"><b>${subject}</b><small>${teacher}</small></td>`;
 
             })
             rows += "</tr>";
