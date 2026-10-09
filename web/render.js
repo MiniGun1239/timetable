@@ -253,7 +253,7 @@ function renderSubstitutionPlanner(){
     if  (!absentTeacher) absentTeacher = teacherIds[0];
 
     let dayOptions = config.days.map(function(day){
-        return '<option value="${day}">${day}</option>'
+return `<option value="${day}">${day}</option>`;
     }).join("");
 
     let teacherOptions = teacherIds.map(function(id){
@@ -281,6 +281,53 @@ function renderSubstitutionPlanner(){
     })
 
     let lessons = [];
+
+    Object.keys(schedule).forEach(function(className){
+        Object.entries(schedule[className]).forEach(function([slot, entry]){
+            if (entry && slot.startsWith(substituteDay + " ") && entry.teacher === absentTeacher){
+                lessons.push({className: className, slot: slot,entry: entry})
+            }
+        })
+    })
+
+    let coverList = document.getElementById("coverList")
+
+    if (!lessons.length){
+        coverList.innerHTML = `<p>This teacher has no lectures that day</p>`
+        return;
+    }
+
+    coverList.innerHTML = lessons.map(function(lesson){
+        let available = teacherIds.filter(function(id){
+            if (id === absentTeacher) 
+                return false;
+
+            return !Object.keys(schedule).some(function(className){
+                let entry = schedule[className][lesson.slot]
+                return entry && entry.teacher === id;
+            })
+        })
+
+        let key = lesson.className + "|" + lesson.slot;
+        let options = available.map(function(id){
+            return `<option value="${id}" ${substituteChoices[key] === id ? "selected" : ""}>${teacherName(id)}</option>`
+        }).join("")
+
+        return `
+        <p> ${lesson.slot} ${lesson.className}: ${subjectName(lesson.entry.subject)}
+            <select data-cover="${key}"> 
+            <option value="">Choose a substitute</option> 
+            ${options}
+            </select>
+        </p>
+        `
+    }).join("")
+
+coverList.querySelectorAll("[data-cover]").forEach(function(select){
+        select.addEventListener("change",function(event){
+            substituteChoices[event.target.dataset.cover] = event.target.value;
+        } )
+    })
 
 }
 
