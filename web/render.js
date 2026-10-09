@@ -74,6 +74,10 @@ for (let p = 1; p <= config.periodsPerDay; p++){
     </div>
     <div id="freeResults" aria-live="polite"></div>
 </section>
+    <section>
+        <h3>Teacher conflict check</h3>
+        <div id="conflictResults"></div>
+    </section>
         <button type="button" id="printTimetable">Print / Save as PDF</button>
         <button type="button" id="downloadJson">Download JSON</button>
         <div id="gridBox"></div>
@@ -113,6 +117,7 @@ for (let p = 1; p <= config.periodsPerDay; p++){
     })
 
         renderFreeTeachers()
+        renderConflicts()
         showView();
 }
 
@@ -203,6 +208,46 @@ function renderFreeTeachers(){
 
     box.innerHTML = `<h3>Free teachers on ${day}, P${period}</h3><ul>${names}</ul>`
 }
+
+// so this might be a part of python, but ill do it as a seperate feature too lol
+
+function renderConflicts(){
+    let box = document.getElementById("conflictResults");
+    let conflicts = [];
+
+    config.days.forEach(function(day){
+        for (let p = 1; p <= config.periodsPerDay; p++){
+            let teachersHere = {};
+
+            Object.keys(schedule).forEach(function(className){
+                let entry = schedule[className][`${day} P${p}`]
+
+                if (entry) {
+                    if (!teachersHere[entry.teacher]){
+                        teachersHere[entry.teacher] = [];
+                    }
+                    teachersHere[entry.teacher].push(className);
+                }
+            })
+            Object.keys(teachersHere).forEach(function(teacherId){
+                if (teachersHere[teacherId].length > 1){
+                    conflicts.push(
+                        teacherName(teacherId) + " is assigned to " + teachersHere[teacherId].join(" and ") + " on " + day + ", P" + p
+                    )
+                }
+            })
+        }
+    })
+    if (conflicts.length === 0){
+        box.innerHTML = `<p class="validationMessage success">No teacher conflicts found</p>`
+    }
+    else {
+        box.innerHTML = `<p class="validationMessage error">Teacher conflicts found:</p><ul>` + conflicts.map(function(conflict){
+return "<li>" + conflict + "</li>";
+        }).join("") + "</ul>"
+    }
+}
+
 
 // gonna add this cause why not lol
 function renderWorkload(){
