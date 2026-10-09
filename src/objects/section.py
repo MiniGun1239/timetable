@@ -7,12 +7,12 @@ class Section:
             id: int,
             grade: int,
             section: str,
-            subjects: list[Subject],
+            subjects: dict[str, Subject],
     ) -> None:
         self.id = id
         self.grade = grade
         self.section = section
-        self.subjects: list[Subject] = subjects
+        self.subjects: dict[str, Subject] = subjects
         return
 
     def id(self):
@@ -21,23 +21,17 @@ class Section:
     def get(self):
         return str(self.grade) + self.section
 
-    def print(self):
+    def __repr__(self):
         return f"Section id: {self.id}, grade: {self.grade}, section: {self.section}"
 
     # add more stuff here
 
 
-def sample() -> list[Section]:
-    output = []
-
+def samples() -> dict[str, Section]:
     subjects = subject.samples()
 
-    output.append(
-        Section(1, 11, "A", subjects)
-    )
-    output.append(
-        Section(2, 11, "B", subjects)
-    )
-
-    return output
+    return {
+        "11A": Section(1, 11, 'A', subjects),
+        "11B": Section(2, 11, 'B', subjects),
+    }
 

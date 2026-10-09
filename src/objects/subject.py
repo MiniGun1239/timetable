@@ -2,8 +2,8 @@ from enum import Enum, auto
 
 
 class BackToBackPolicy(Enum):
-    ANY = auto()
-    FORCE = auto()
+    ANY    = auto()
+    FORCE  = auto()
     FORBID = auto()
 
 class Subject:
@@ -33,51 +33,28 @@ class Subject:
 
         return f"Subject id: {self.id}, name: {self.name}{b2b_info}, times per week: {self.times_per_week}"
 
-    def is_back2back(self) -> bool:
-        return True if self.back2back == BackToBackPolicy.FORCE else False
-
-    def is_noback2back(self) -> bool:
-        return True if self.back2back == BackToBackPolicy.FORBID else False
+    def b2b(self) -> BackToBackPolicy:
+        return self.back2back.value
 
     # add more stuff idk wwhat tho
 
 
-def samples() -> dict[int, Subject]:
-    output = {}
-
-    output.update(
-        {"English1": Subject(1, "English", times_per_week=5)}
-    )
-    output.update(
-        {"Math1": Subject(2, "Math / IP / PE", times_per_week=6)}
-    )
-    output.update(
-        {"Physics1": Subject(3, "Physics", times_per_week=6)}
-    )
-    output.update(
-        {"Chemistry1": Subject(4, "Chemistry", times_per_week=6)}
-    )
-    output.update(
-        {"Biology1": Subject(5, "Bio / CS", times_per_week=6)}
-    )
-    output.update(
-        {"Psychology1": Subject(6, "Psychology", times_per_week=3)}
-    )
-    output.update(
-        {"PE1": Subject(7, "WB / PE", times_per_week=2)}
-    )
-    output.update(
-        {"Biology LAB": Subject(8, "Bio / CS LAB", times_per_week=2)}
-    )
-    output.update(
-        {"Physics LAB": Subject(9, "Physics LAB", times_per_week=2)}
-    )
-    output.update(
-        {"Chemistry LAB": Subject(10, "Chemistry LAB", times_per_week=2)}
-    )
-
-    return output
+def samples() -> dict[str, Subject]:
+    return {
+        "English1"      : Subject(1,  "English",        times_per_week=5),
+        "Math1"         : Subject(2,  "Math / IP / PE", times_per_week=6),
+        "Physics1"      : Subject(3,  "Physics",        times_per_week=6),
+        "Chemistry1"    : Subject(4,  "Chemistry",      times_per_week=6),
+        "Biology1"      : Subject(5,  "Bio / CS",       times_per_week=6),
+        "Psychology1"   : Subject(6,  "Psychology",     times_per_week=3),
+        "PE1"           : Subject(7,  "WB / PE",        times_per_week=2),
+        "Biology LAB"   : Subject(8,  "Bio / CS LAB",   times_per_week=2),
+        "Physics LAB"   : Subject(9,  "Physics LAB",    times_per_week=2),
+        "Chemistry LAB" : Subject(10, "Chemistry LAB",  times_per_week=2)
+    }
 
 if __name__ == "__main__":
-    samples()
+    subjects = samples()
+    for key, subject in subjects.items():
+        print(f"{key}: {subject}")
 
