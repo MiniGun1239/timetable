@@ -1,44 +1,26 @@
 import weakref
-from email._header_value_parser import Section
+from dataclasses import dataclass, field, asdict
 
-from objects import Subject, subject
+from . import Subject, subject
 
 
+@dataclass
 class Section:
-    _instances = weakref.WeakSet()
+    id: int
+    grade: int
+    section: str
+    subjects: dict[str, int]
 
-    def __init__(
-            self,
-            id: int,
-            grade: int,
-            section: str,
-            subject_ids: dict[str, int],
-    ) -> None:
-        self.id                         = id
-        self.grade                      = grade
-        self.section                    = section
-        self.subjects: dict[str, int]   = subject_ids
-        return
-
-    def id(self):
-        return self.id
+    _instances: weakref.WeakSet = field(default_factory=weakref.WeakSet, init=False, repr=False)
 
     def get(self):
         return str(self.grade) + self.section
 
-    def __repr__(self):
-        return f"Section id: {self.id}, grade: {self.grade}, section: {self.section}"
-
     def serialize(self) -> dict:
-        return {
-            "id"        : self.id,
-            "grade"     : self.grade,
-            "section"   : self.section,
-            "subjects"  : self.subjects
-        }
+        return asdict(self)
 
     @classmethod
-    def deserialize(cls, data: dict) -> Section:
+    def deserialize(cls, data: dict) -> "Section":
         return cls(
             data["id"],
             data["grade"],
@@ -60,7 +42,12 @@ def samples() -> dict[str, Section]:
         subject_ids[key] = sub.id
 
     return {
-        "11A": Section(1, 11, 'A', subject_ids=subject_ids),
-        "11B": Section(2, 11, 'B', subject_ids=subject_ids),
+        "11A": Section(1, 11, 'A', subjects=subject_ids),
+        "11B": Section(2, 11, 'B', subjects=subject_ids),
     }
+
+if __name__ == "__main__":
+    sections = samples()
+    for section in sections:
+        print(section)
 

@@ -2,10 +2,11 @@ import json
 import weakref
 from dataclasses import dataclass
 from enum import Enum
+
 from constants import SUBJECT_DATA
 
 
-class BackToBackPolicy(Enum, str):
+class BackToBackPolicy(str, Enum):
     ANY    = "ANY"
     FORCE  = "FORCE"
     FORBID = "FORBID"
