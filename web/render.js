@@ -6,6 +6,9 @@ let picked = "";
 let view = "class";
 let pickedTeacher = "";
 let teacherIds = [];
+let substituteDay = "";
+let absentTeacher = "";
+let substituteChoices = {};
 
 export function displayGeneratedSchedule(scheduleData){
     setSchedule(scheduleData);
@@ -60,6 +63,7 @@ for (let p = 1; p <= config.periodsPerDay; p++){
             <option value="teacher" ${view === "teacher" ? "selected" : ""}>Teacher timetable</option>
             <option value="workload" ${view === "workload" ? "selected" : ""}>Teacher workload</option>
             <option value="all" ${view === "all" ? "selected" : ""}>All classes</option>
+            <option value="substitutions" ${view == "substitutions" ? "selected" : ""}>Substitution planner</option> 
         </select>
     </label>
 
@@ -138,6 +142,9 @@ function showView(){
     }
     else if (view === "workload"){
     renderWorkload();
+    }
+    else if (view === "substitutions"){
+        renderSubstitutionPlanner()
     }
     else {
              renderAllClasses();
@@ -230,6 +237,51 @@ function renderFreeTeachers(){
     }).join("");
 
     box.innerHTML = `<h3>Free teachers on ${day}, P${period}</h3><ul>${names}</ul>`
+}
+
+// idk how is this gonna work aaah
+
+function renderSubstitutionPlanner(){
+    let box = document.getElementById("gridBox");
+
+    if (!config.days.length || !teacherIds.length){
+        box.innerHTML = "<p>Add teaching days and teachers first</p>"
+        return;
+    }
+
+    if (!substituteDay) substituteDay = config.days[0];
+    if  (!absentTeacher) absentTeacher = teacherIds[0];
+
+    let dayOptions = config.days.map(function(day){
+        return '<option value="${day}">${day}</option>'
+    }).join("");
+
+    let teacherOptions = teacherIds.map(function(id){
+        return `<option value="${id}">${teacherName(id)}</option>`
+    }).join("")
+
+    box.innerHTML = `
+        <h3>Substitution planner</h3>
+        <label>Day <select id="subDay">${dayOptions}</select></label>
+        <label>Absent teacher <select id="absentTeacher">${teacherOptions}</select></label>
+        <div id="coverList"></div>
+    `
+
+    document.getElementById("subDay").value = substituteDay;
+    document.getElementById("absentTeacher").value = absentTeacher;
+
+    document.getElementById("subDay").addEventListener("change", function(event){
+        substituteDay = event.target.value;
+        renderSubstitutionPlanner()
+    })
+
+    document.getElementById("absentTeacher").addEventListener("change", function(event){
+        absentTeacher = event.target.value;
+        renderSubstitutionPlanner()
+    })
+
+    let lessons = [];
+
 }
 
 // so this might be a part of python, but ill do it as a seperate feature too lol
