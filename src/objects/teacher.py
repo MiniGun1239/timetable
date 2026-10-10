@@ -12,10 +12,13 @@ class Teacher:
     subjects: list[int]
     section: int | None = None
 
-    _instances: weakref.WeakSet = field(default_factory=weakref.WeakSet, init=False, repr=False)
+    _instances: list = field(default_factory=list, init=False, repr=False)
 
     def __post_init__(self):
-        self._instances.add(self)
+        self._instances.append(self)
+
+    def __repr__(self):
+        return f"{self.name}: id={self.id}, subjects={self.subjects}{f", section = {self.section}" if self.section else ""}"
 
     def serialize(self) -> dict:
         return asdict(self)
@@ -54,21 +57,21 @@ def samples():
             3, "Mehenaz",
             subjects=[
                 subjects["Physics1"   ].id,
-                subjects["Physics LAB"].id
+                subjects["Physics LAB1"].id
             ]
         ),
         "Rani"   : Teacher(
             4, "Rani",
             subjects=[
                 subjects["Chemistry1"   ].id,
-                subjects["Chemistry LAB"].id
+                subjects["Chemistry LAB1"].id
             ]
         ),
         "Divya"  : Teacher(
             5, "Divya",
             subjects=[
-                subjects["Biology2"].id,
-                subjects["Biology LAB"].id
+                subjects["Biology1"].id,
+                subjects["Biology LAB1"].id
             ]
         ),
         "Sadia"  : Teacher(
@@ -97,6 +100,8 @@ def load_all():
 
 
 if __name__ == "__main__":
-    for teacher in samples():
-        print(teacher)
+    teachers = list(samples().values())
+
+    for teacher in teachers:
+        print(f"{teacher}")
 

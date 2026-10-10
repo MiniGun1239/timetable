@@ -19,19 +19,19 @@ class Subject:
     back2back: BackToBackPolicy = BackToBackPolicy.ANY
     times_per_week: int = 1
 
-    _instances: weakref.WeakSet = field(default_factory=weakref.WeakSet, init=False, repr=False)
+    _instances: list = field(default_factory=list, init=False, repr=False)
 
     def __post_init__(self):
-        self._instances.add(self)
+        self._instances.append(self)
 
     def __repr__(self):
-        b2b_info = ", back2back: required" \
+        b2b_info = ", back2back=required" \
             if self.back2back.value == BackToBackPolicy.FORCE \
-            else ", back2back: forbidden" \
+            else ", back2back=forbidden" \
             if self.back2back.value == BackToBackPolicy.FORBID \
             else ""
 
-        return f"Subject id: {self.id}, name: {self.name}{b2b_info}, times per week: {self.times_per_week}"
+        return f"{self.name}: id={self.id}{b2b_info}, times per week={self.times_per_week}"
 
     def b2b(self) -> BackToBackPolicy:
         return self.back2back
@@ -86,7 +86,7 @@ def load_all():
 
 
 if __name__ == "__main__":
-    subjects = samples()
-    for key, subject in subjects.items():
-        print(f"{key}: {subject}")
+    subjects = list(samples().values())
+    for subject in subjects:
+        print(f"{subject}")
 

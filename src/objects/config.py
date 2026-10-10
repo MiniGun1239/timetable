@@ -2,6 +2,7 @@ import json
 from dataclasses import dataclass, field, asdict
 
 from constants import CONFIG_DATA
+from objects import section, subject, teacher
 
 
 @dataclass
@@ -10,7 +11,7 @@ class Config:
     periods: int
     school: str
     teachers: list
-    classes: list
+    sections: list
     subjects: list
     breaks: list[dict[str, int | str]] = field(init=False, repr=False)
 
@@ -34,7 +35,30 @@ class Config:
             conf_data["periods"],
             conf_data["school"],
             conf_data["teachers"],
-            conf_data["classes"],
+            conf_data["sections"],
             conf_data["subjects"]
         )
+
+
+def sample():
+    teachers = teacher.samples()
+    sections = list(section.samples().values())
+    subjects = list(subject.samples().values())
+
+    days = ["mon", "tue", "wed", "thu", "fri"]
+    school_name = "Hack Club Institute of Hacking"
+
+    return Config(
+        days=days,
+        periods=8,
+        school=school_name,
+        teachers=teachers,
+        sections=sections,
+        subjects=subjects,
+    )
+
+if __name__ == "__main__":
+    config = sample()
+
+    print(config)
 

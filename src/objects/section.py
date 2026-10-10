@@ -13,15 +13,18 @@ class Section:
     id: int
     grade: int
     section: str
-    subjects: dict[str, int]
+    subjects: list[int]
 
-    _instances: weakref.WeakSet = field(default_factory=weakref.WeakSet, init=False, repr=False)
+    _instances: list = field(default_factory=list, init=False, repr=False)
 
     def __post_init__(self):
-        self._instances.add(self)
+        self._instances.append(self)
 
-    def get(self):
-        return str(self.grade) + self.section
+    def __repr__(self) -> str:
+        return f"{self.grade}{self.section}: id={self.id}, subjects={self.subjects}"
+
+    def get(self) -> str:
+        return f"{self.grade}{self.section}"
 
     def serialize(self) -> dict:
         return asdict(self)
@@ -43,10 +46,10 @@ class Section:
 def samples() -> dict[str, Section]:
     subjects: dict[str, Subject] = subject.samples()
 
-    subject_ids = {}
+    subject_ids = []
 
     for key, sub in subjects.items():
-        subject_ids[key] = sub.id
+        subject_ids.append(sub.id)
 
     return {
         "11A": Section(1, 11, 'A', subjects=subject_ids),
@@ -70,7 +73,7 @@ def load_all():
 
 
 if __name__ == "__main__":
-    sections = samples()
-    for key, section in sections.items():
-        print(f"{key}: {section}")
+    sections = list(samples().values())
+    for section in sections:
+        print(f"{section}")
 
