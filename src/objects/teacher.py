@@ -92,6 +92,9 @@ def load_all():
     with open(TEACHER_DATA, "r", encoding="utf-8") as teach_data:
         all_teachs: list[dict] = json.load(teach_data)
 
+    for teacher in all_teachs:
+        Teacher.deserialize(teacher)
+
 
 if __name__ == "__main__":
     for teacher in samples():
