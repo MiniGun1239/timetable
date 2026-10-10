@@ -1,3 +1,4 @@
+import json
 import weakref
 from dataclasses import dataclass, field, asdict
 
@@ -15,6 +16,9 @@ class Section:
     subjects: dict[str, int]
 
     _instances: weakref.WeakSet = field(default_factory=weakref.WeakSet, init=False, repr=False)
+
+    def __post_init__(self):
+        self._instances.add(self)
 
     def get(self):
         return str(self.grade) + self.section
@@ -41,7 +45,7 @@ def samples() -> dict[str, Section]:
 
     subject_ids = {}
 
-    for key, sub in subjects:
+    for key, sub in subjects.items():
         subject_ids[key] = sub.id
 
     return {
@@ -67,6 +71,6 @@ def load_all():
 
 if __name__ == "__main__":
     sections = samples()
-    for section in sections:
-        print(section)
+    for key, section in sections.items():
+        print(f"{key}: {section}")
 
