@@ -12,3 +12,11 @@ TIMETABLE_DATA = DATA / 'timetables.json'
 WEB_DIR = Path(__file__).parent.parent / 'web'
 # --- Path initializing done ig
 
+def __init__():
+    TIMETABLE_DATA.touch(exist_ok=True)
+    SUBJECT_DATA.touch(exist_ok=True)
+    TEACHER_DATA.touch(exist_ok=True)
+    SECTION_DATA.touch(exist_ok=True)
+    CONFIG_DATA.touch(exist_ok=True)
+    pass
+
