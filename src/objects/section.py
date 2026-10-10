@@ -1,7 +1,10 @@
 import weakref
 from dataclasses import dataclass, field, asdict
 
-from . import Subject, subject
+from objects import subject
+from constants import SECTION_DATA
+
+Subject = subject.Subject
 
 
 @dataclass
