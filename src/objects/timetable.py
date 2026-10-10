@@ -10,8 +10,8 @@ class Timetable:
     section: int
     rows: dict[str, list[int | None]]
 
-    _instances: weakref.WeakSet = field(
-        default_factory=weakref.WeakSet,
+    _instances: list = field(
+        default_factory=list,
         init=False,
         repr=False
     )
