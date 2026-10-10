@@ -1,6 +1,6 @@
 import json
 import weakref
-from dataclasses import dataclass
+from dataclasses import dataclass, field, asdict
 from enum import Enum
 
 from constants import SUBJECT_DATA
@@ -14,22 +14,15 @@ class BackToBackPolicy(str, Enum):
 
 @dataclass
 class Subject:
-    _instances = weakref.WeakSet()
+    id: int
+    name: str
+    back2back: BackToBackPolicy = BackToBackPolicy.ANY
+    times_per_week: int = 1
 
-    def __init__(
-            self,
-            id: int,
-            name: str,
-            back2back: BackToBackPolicy = BackToBackPolicy.ANY,
-            times_per_week: int = 1,
-    ) -> None:
-        self.id = id
-        self.name = name
+    _instances: weakref.WeakSet = field(default_factory=weakref.WeakSet, init=False, repr=False)
 
-        self.back2back = back2back
-
-        self.times_per_week = times_per_week
-        return
+    def __post_init__(self):
+        self._instances.add(self)
 
     def __repr__(self):
         b2b_info = ", back2back: required" \
@@ -44,12 +37,9 @@ class Subject:
         return self.back2back
 
     def serialize(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "back2back": self.back2back.value,
-            "times_per_week": self.times_per_week
-        }
+        data = asdict(self)
+        data["back2back"] = self.back2back.value
+        return data
 
     @classmethod
     def deserialize(cls, data: dict):
@@ -64,22 +54,36 @@ class Subject:
     def getInstances(cls):
         return cls._instances
 
-    # add more stuff idk wwhat tho
-
 
 def samples() -> dict[str, Subject]:
     return {
-        "English1"      : Subject(1,  "English",        times_per_week=5),
-        "Math1"         : Subject(2,  "Math / IP / PE", times_per_week=6),
-        "Physics1"      : Subject(3,  "Physics",        times_per_week=6),
-        "Chemistry1"    : Subject(4,  "Chemistry",      times_per_week=6),
-        "Biology1"      : Subject(5,  "Bio / CS",       times_per_week=6),
-        "Psychology1"   : Subject(6,  "Psychology",     times_per_week=3),
-        "PE1"           : Subject(7,  "WB / PE",        times_per_week=2),
-        "Biology LAB"   : Subject(8,  "Bio / CS LAB",   times_per_week=2, back2back=BackToBackPolicy.FORCE),
-        "Physics LAB"   : Subject(9,  "Physics LAB",    times_per_week=2, back2back=BackToBackPolicy.FORCE),
-        "Chemistry LAB" : Subject(10, "Chemistry LAB",  times_per_week=2, back2back=BackToBackPolicy.FORCE),
+        "English1"       : Subject(1,  "English",       times_per_week=5),
+        "Math1"          : Subject(2,  "Math",          times_per_week=6),
+        "Physics1"       : Subject(3,  "Physics",       times_per_week=6),
+        "Chemistry1"     : Subject(4,  "Chemistry",     times_per_week=6),
+        "Biology1"       : Subject(5,  "Biology",       times_per_week=6),
+        "Psychology1"    : Subject(6,  "Psychology",    times_per_week=3),
+        "PE1"            : Subject(7,  "PE",            times_per_week=2, back2back=BackToBackPolicy.FORBID ),
+        "Biology LAB1"   : Subject(8,  "Biology LAB",   times_per_week=2, back2back=BackToBackPolicy.FORCE  ),
+        "Physics LAB1"   : Subject(9,  "Physics LAB",   times_per_week=2, back2back=BackToBackPolicy.FORCE  ),
+        "Chemistry LAB1" : Subject(10, "Chemistry LAB", times_per_week=2, back2back=BackToBackPolicy.FORCE  ),
     }
+
+
+def save_all():
+    all_subs = [subject.serialize() for subject in Subject.getInstances()]
+
+    with open(SUBJECT_DATA, "w", encoding="utf_8") as sub_data:
+        json.dump(all_subs, sub_data, indent=2)
+
+
+def load_all():
+    with open(SUBJECT_DATA, "r", encoding="utf_8") as sub_data:
+        all_subs: list[dict] = json.load(sub_data)
+
+    for subject in all_subs:
+        Subject.deserialize(subject)
+
 
 if __name__ == "__main__":
     subjects = samples()
