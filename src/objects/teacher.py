@@ -79,6 +79,18 @@ def samples():
         ),
     }
 
+
+def save_all():
+    all_teachs = [teacher.serialize() for teacher in Teacher.getInstances()]
+
+    with open(TEACHER_DATA, "w", encoding="utf-8") as teach_data:
+        json.dump(all_teachs, teach_data, indent=2)
+
+def load_all():
+    with open(TEACHER_DATA, "r", encoding="utf-8") as teach_data:
+        all_teachs: list[dict] = json.load(teach_data)
+
+
 if __name__ == "__main__":
     for teacher in samples():
         print(teacher)
