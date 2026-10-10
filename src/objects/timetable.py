@@ -23,7 +23,7 @@ class Timetable:
         return output
 
     def __post_init__(self):
-        self._instances.add(self)
+        self._instances.append(self)
 
     def addRow(self, row: dict[str, list[int | None]]) -> bool:
         self.rows.update(row)
