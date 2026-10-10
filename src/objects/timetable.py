@@ -1,10 +1,20 @@
+from dataclasses import dataclass, asdict
+
 from objects import Config, Section
 
 
+@dataclass
 class Timetable:
-    def __init__(self, section: Section) -> None:
-        self.section = section
-        self.order = {}
+    config: Config
+    section: Section
+    rows: dict[str, list[int | None]]
+
+    def addRow(self, row: dict[str, list[int | None]]) -> bool:
+        self.rows.update(row)
+        return True
+
+    def serialize(self):
+        return asdict(self)
 
 
 def create(config: Config) -> Timetable:
