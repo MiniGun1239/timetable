@@ -39,13 +39,44 @@ def samples():
     # ill just add my teacher names
 
     return {
-        "Sabin"     : Teacher(1, "Sabin", subjects=[subjects["English1"].id], section=sections["11B"].id()),
-        "Binesh"    : Teacher(2, "Binesh", subjects=[subjects["Math1"].id]),
-        "Mehenaz"   : Teacher(3, "Mehenaz", subjects=[subjects["Physics1"].id , subjects["Physics LAB"].id]),
-        "Rani"      : Teacher(4, "Rani", subjects=[subjects["Chemistry1"].id , subjects["Chemistry LAB"].id]),
-        "Divya"     : Teacher(5, "Divya", subjects=[subjects["Biology2"].id , subjects["Biology LAB"].id]),
-        "Sadia"     : Teacher(6, "Sadia", subjects=[subjects["Psychology1"].id]),
-        "Mujeeb"    : Teacher(7, "Mujeeb", subjects=[subjects["PE1"].id]),
+        "Sabin"  : Teacher(
+            1, "Sabin",
+            subjects=[subjects["English1"].id],
+            section=sections["11B"].id
+        ),
+        "Binesh" : Teacher(
+            2, "Binesh",
+            subjects=[subjects["Math1"].id]
+        ),
+        "Mehenaz": Teacher(
+            3, "Mehenaz",
+            subjects=[
+                subjects["Physics1"   ].id,
+                subjects["Physics LAB"].id
+            ]
+        ),
+        "Rani"   : Teacher(
+            4, "Rani",
+            subjects=[
+                subjects["Chemistry1"   ].id,
+                subjects["Chemistry LAB"].id
+            ]
+        ),
+        "Divya"  : Teacher(
+            5, "Divya",
+            subjects=[
+                subjects["Biology2"].id,
+                subjects["Biology LAB"].id
+            ]
+        ),
+        "Sadia"  : Teacher(
+            6, "Sadia",
+            subjects=[subjects["Psychology1"].id]
+        ),
+        "Mujeeb" : Teacher(
+            7, "Mujeeb",
+            subjects=[subjects["PE1"].id]
+        ),
     }
 
 if __name__ == "__main__":
