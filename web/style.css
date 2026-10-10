@@ -165,6 +165,12 @@ select {
     color: #8B9A6E;
 }
 
+.freeTeacherFinder summary {
+    cursor: pointer;
+    color: #8B9A6E;
+    font-weight: bold
+}
+
 .freeTeacherControls {
     display: flex;
     flex-wrap: wrap;

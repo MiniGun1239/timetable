@@ -57,27 +57,29 @@ for (let p = 1; p <= config.periodsPerDay; p++){
 
     panel.innerHTML = `
     <h2>Timetables</h2>
-    <label>View
+    <label id="viewLabel">View
         <select id="viewPick">
             <option value="class" ${view === "class" ? "selected" : ""}>Class timetable</option>
             <option value="teacher" ${view === "teacher" ? "selected" : ""}>Teacher timetable</option>
-            <option value="workload" ${view === "workload" ? "selected" : ""}>Teacher workload</option>
             <option value="all" ${view === "all" ? "selected" : ""}>All classes</option>
-            <option value="substitutions" ${view == "substitutions" ? "selected" : ""}>Substitution planner</option> 
         </select>
     </label>
 
+    <button type="button" id="workloadButton">Teacher workload</button>
+    <button type="button" id="substitutionButton">Substitution planner</button>
+    <button type="button" id="backToViewButton" hidden>Back to timetable views</button>
+
     <label id="classPicker">Class <select id="classPick">${options}</select></label>
     <label id="teacherPicker" hidden> Teacher <select id="teacherPick">${teacherOptions}</select></label>
-<section class="freeTeacherFinder">
-    <h3>Find a free teacher</h3>
+<details class="freeTeacherFinder">
+    <summary>Find a free teacher</summary>
     <p>Choose a day and period to see which teachers are available :D</p>
     <div class="freeTeacherControls">
         <label>Day <select id="freeDay">${dayOptions}</select></label>
         <label>Period <select id="freePeriod">${periodOptions}</select></label>
     </div>
     <div id="freeResults" aria-live="polite"></div>
-</section>
+</details>
     <section>
         <h3>Teacher conflict check</h3>
         <div id="conflictResults"></div>
@@ -105,6 +107,21 @@ for (let p = 1; p <= config.periodsPerDay; p++){
         showView()
     })
 
+    document.getElementById("workloadButton").addEventListener("click", function(){
+        view = "workload";
+        showView();
+    })
+
+    document.getElementById("substitutionButton").addEventListener("click", function(){
+        view = "substitutions";
+        showView();
+    })
+
+    document.getElementById("backToViewButton").addEventListener("click", function(){
+        view="class";
+        showView()
+    })
+
     document.getElementById("printTimetable").addEventListener("click", function(){
         window.print();
     })
@@ -129,6 +146,12 @@ function showView(){
     let classPicker = document.getElementById("classPicker")
     let teacherPicker = document.getElementById("teacherPicker")
     let printButton = document.getElementById("printTimetable")
+    let viewLabel = document.getElementById("viewLabel")
+    let backButton = document.getElementById("backToViewButton")
+    let specialView = view == "workload" || view == "substitutions"
+
+    viewLabel.hidden = specialView
+    backButton.hidden = !specialView
 
     classPicker.hidden = view !== "class";
     teacherPicker.hidden = view !== "teacher";
