@@ -2,7 +2,9 @@ import weakref
 from dataclasses import dataclass, asdict, field
 from ortools.sat.python import cp_model
 
-from objects import Config
+from objects import config
+
+Config = config.Config
 
 
 @dataclass
