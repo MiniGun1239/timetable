@@ -1,4 +1,3 @@
-import weakref
 from dataclasses import dataclass, asdict, field
 from ortools.sat.python import cp_model
 
