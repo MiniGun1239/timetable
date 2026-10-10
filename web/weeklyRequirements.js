@@ -98,3 +98,43 @@ export function listenWeeklyRequirements(panel, config, renderSetup){
         })
     })
 }
+
+export function weeklyRequirementErrors(config){
+    let errors = [];
+    let assignemnts = getAssignments(config);
+    let classNames = [];
+
+    config.grades.forEach(function(grade){
+        grade.sections.forEach(function(grade){
+            classNames.push(grade.name + "-" + section)
+        })
+    })
+
+    assignemnts.forEach(function(requirement, index){
+        let subjectExists = config.subjects.some(function(subject){
+            return subject.id == requirement.subjectId
+        })
+
+        let teacherExists = config.teachers.some(function(teacher){
+            return teacher.id == requirement.teacherId
+        })
+
+
+        // umm the stupid add errors, why do you even need these lol
+        if (!subjectExists || !classNames.includes(requirement.className) || !teacherExists){
+            errors.push("Requirement " + (index + 1) + ": choose a subject, class, and teacher")
+        }
+
+        if (!Number.isInteger(requirement.minimumPerWeek) || requirement.minimumPerWeek < 1){
+            errors.push("Requirement " + (index + 1 + ": minimum lessons must be positive bruhh"))
+        }
+
+        if (config.days.length > 0 && Number.isInteger(config.periodsPerDay) && 
+            requirement.minimumPerWeek > config.days.length * config.periodsPerDay){
+            errors.push("Requirement " + (index + 1) + ": weekly minumum cant be larger than available periods");
+        }
+})
+
+return errors;
+    
+}
