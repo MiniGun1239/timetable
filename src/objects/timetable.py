@@ -1,7 +1,7 @@
 from dataclasses import dataclass, asdict, field
 from ortools.sat.python import cp_model
 
-from objects import config
+from objects import config, Section, Subject, Teacher
 
 Config = config.Config
 
