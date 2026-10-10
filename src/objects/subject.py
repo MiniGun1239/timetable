@@ -2,6 +2,7 @@ import json
 import weakref
 from dataclasses import dataclass, field, asdict
 from enum import Enum
+from typing import ClassVar
 
 from constants import SUBJECT_DATA
 
@@ -19,7 +20,7 @@ class Subject:
     back2back: BackToBackPolicy = BackToBackPolicy.ANY
     times_per_week: int = 1
 
-    _instances: list = field(default_factory=list, init=False, repr=False)
+    _instances: ClassVar[list] = []
 
     def __post_init__(self):
         self._instances.append(self)
@@ -86,7 +87,9 @@ def load_all():
 
 
 if __name__ == "__main__":
-    subjects = list(samples().values())
+    samples()
+    subjects = Subject.getInstances()
+
     for subject in subjects:
         print(f"{subject}")
 

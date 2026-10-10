@@ -1,6 +1,7 @@
 import json
 import weakref
 from dataclasses import dataclass, field, asdict
+from typing import ClassVar
 
 from constants import TEACHER_DATA
 from objects import section, subject
@@ -12,7 +13,7 @@ class Teacher:
     subjects: list[int]
     section: int | None = None
 
-    _instances: list = field(default_factory=list, init=False, repr=False)
+    _instances: ClassVar[list] = []
 
     def __post_init__(self):
         self._instances.append(self)
@@ -100,7 +101,8 @@ def load_all():
 
 
 if __name__ == "__main__":
-    teachers = list(samples().values())
+    samples()
+    teachers = Teacher.getInstances()
 
     for teacher in teachers:
         print(f"{teacher}")
