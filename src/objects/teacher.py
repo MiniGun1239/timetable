@@ -1,3 +1,4 @@
+import json
 import weakref
 from dataclasses import dataclass, field, asdict
 
