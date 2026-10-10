@@ -16,10 +16,9 @@ class Timetable:
     )
 
     def __repr__(self) -> str:
-        output = f""
-        for i, row in enumerate(self.rows):
-            output += f"{i}: {row}\n"
-
+        output = f"Timetable for Section {self.section}:\n"
+        for day, row in self.rows.items():
+            output += f"  {day}: {row}\n"
         return output
 
     def __post_init__(self):
