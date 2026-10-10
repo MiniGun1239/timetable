@@ -188,25 +188,32 @@ def create(config: Config) -> list[Timetable]:
                                 model.Add(sum(p_vars) + sum(p_next_vars) <= 1)
 
                 elif policy_val == "FORCE":
-                    # Force double periods: if it occurs at p, it MUST occur at p+1 (unless it's an odd-ending pattern,
-                    # but standard implementation enforces that an isolated instance is barred)
                     for d in days:
-                        for p in range(periods_count - 1):
-                            p_vars = [
-                                x[(sec_id, d, p, sub_id, get_attr(t, 'id'))]
+                        # Helper function to sum all teacher variables for a subject at a specific day and period
+                        def get_period_sum(p_idx):
+                            return sum(
+                                x[(sec_id, d, p_idx, sub_id, get_attr(t, 'id'))]
                                 for t in teach_list
                                 if sub_id in get_attr(t, 'subjects', [])  # [cite: 4]
-                                   and (sec_id, d, p, sub_id, get_attr(t, 'id')) in x
-                            ]
-                            p_next_vars = [
-                                x[(sec_id, d, p + 1, sub_id, get_attr(t, 'id'))]
-                                for t in teach_list
-                                if sub_id in get_attr(t, 'subjects', [])  # [cite: 4]
-                                   and (sec_id, d, p + 1, sub_id, get_attr(t, 'id')) in x
-                            ]
-                            if p_vars and p_next_vars:
-                                # If subject is at p, it must be at p+1 (sum(p_vars) <= sum(p_next_vars))
-                                model.Add(sum(p_vars) <= sum(p_next_vars))
+                                and (sec_id, d, p_idx, sub_id, get_attr(t, 'id')) in x
+                            )
+
+                        last_p = periods_count - 1
+                        for p in range(periods_count):
+                            p_sum = get_period_sum(p)
+                            if p == 0:
+                                # If it's at the very start, it must be followed by period 1
+                                next_sum = get_period_sum(1)
+                                model.Add(p_sum <= next_sum)
+                            elif p == last_p:
+                                # If it's at the very end, it must be preceded by the second-to-last period
+                                prev_sum = get_period_sum(last_p - 1)
+                                model.Add(p_sum <= prev_sum)
+                            else:
+                                # For any middle period, it needs at least one neighbor (before or after)
+                                prev_sum = get_period_sum(p - 1)
+                                next_sum = get_period_sum(p + 1)
+                                model.Add(p_sum <= prev_sum + next_sum)
 
     # Solve the model
     solver = cp_model.CpSolver()
