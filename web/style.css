@@ -70,6 +70,10 @@ input {
     margin: 6px 0;
 }
 
+.weeklyRequirementRow {
+    flex-wrap: wrap;
+}
+
 button {
     background: #8B9A6E;
     color: #F7F2EB;
