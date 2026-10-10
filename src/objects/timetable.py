@@ -18,7 +18,14 @@ class Timetable:
     )
 
     def __repr__(self) -> str:
-        output = f"Timetable for Section {self.section}:\n"
+        section_name = self.section
+
+        for section in Section.getInstances():
+            if section.id == self.section:
+                section_name = section.get()
+                break
+
+        output = f"Timetable for {section_name}:\n"
         for day, row in self.rows.items():
             output += f"  {day}: {row}\n"
         return output
