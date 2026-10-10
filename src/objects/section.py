@@ -46,6 +46,22 @@ def samples() -> dict[str, Section]:
         "11B": Section(2, 11, 'B', subjects=subject_ids),
     }
 
+
+def save_all():
+    all_secs = [section.serialize() for section in Section.getInstances()]
+
+    with open(SECTION_DATA, "w", encoding="utf_8") as sec_data:
+        json.dump(all_secs, sec_data, indent=2)
+
+
+def load_all():
+    with open(SECTION_DATA, "r", encoding="utf_8") as sec_data:
+        all_sec: list[dict] = json.load(sec_data)
+
+    for section in all_sec:
+        Section.deserialize(section)
+
+
 if __name__ == "__main__":
     sections = samples()
     for section in sections:
