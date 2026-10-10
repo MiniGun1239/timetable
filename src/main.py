@@ -1,7 +1,7 @@
 # --- IMPORTS ---
 from flask import Flask, render_template
 from constants import *
-# --- End of Hitler
+# --- End of IMPORTS
 
 
 # --- Flask Stuff ---
