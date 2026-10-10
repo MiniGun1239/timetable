@@ -32,7 +32,7 @@ class Timetable:
         return asdict(self)
 
     @classmethod
-    def deserialize(cls, data: dict[int, list[int | None]]) -> "Timetable":
+    def deserialize(cls, data: dict) -> "Timetable":
         return cls(
             data["section"],
             data["rows"],
