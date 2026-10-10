@@ -1,8 +1,18 @@
+function escapeHtml(value){
+    // so this is cause, yk if not this it will bug out the html
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;")
+}
+
 function getAssignments(config){
-    if (!Array.isArray(config.assignemnts)){
-        config.assignemnts = []
+    if (!Array.isArray(config.assignments)){
+        config.assignments = []
     }
-    return config.assignemnts;
+    return config.assignments;
 }
 
 // yo tell me if something's wrong with this
@@ -15,46 +25,47 @@ function requirementRow(config, requirement, index){
     let classOptions = `<option value="">Choose class</option>`;
 
     config.grades.forEach(function(grade){
-        grade.section.forEach(function(section){
+        grade.sections.forEach(function(section){
             let className = grade.name + "-" + section
             classOptions += `<option value="${escapeHtml(className)}" ${requirement.className == className ? "selected" : ""}> ${escapeHtml(className)}</option>`
         })
     })
 
-    let teacherOptions = `<option value="">Choose teacher</option>` + config.subjects.map(function(subject){
-        return `<option value="${escapeHtml(teacherOptions.id)}" ${requirement.teacherId === teacherId ? "selected" : ""}> ${escapeHtml(teacherOptions.name)}</option>`
+let teacherOptions = `<option value="">Choose teacher</option>` + config.teachers.map(function(teacher){
+            return `<option value="${escapeHtml(teacher.id)}" ${requirement.teacherId === teacher.id ? "selected" : ""}> ${escapeHtml(teacher.name)}</option>`
     }).join("")
 
     // so this is for the million event handlers im gonna write in the end lol 
     return `
     <div class="row weeklyRequirementRow">
-        <label>Subject <select data-weekly-subjects="${index}">${subjectOptions}</select></label>
+        <label>Subject <select data-weekly-subject="${index}">${subjectOptions}</select></label>
         <label>Class and Section <select data-weekly-class="${index}">${classOptions}</select></label>
-        <label>Teacher <select data-weekly-class="${index}">${teacherOptions}</select></label>
+        <label>Teacher <select data-weekly-teacher="${index}">${teacherOptions}</select></label>
         <label>Minimum per week <input type="number" data-weekly-min="${index}" value="${requirement.minimumPerWeek}" min="1"></label>
+        <button type="button" data-remove-weekly="${index}">Remove</button>
     </div>
     `
 }
 
-export function renderWeeklyRequirements(config){
+export function renderWeeklyRequirements(config, openSetupSection){
     let assignments = getAssignments(config);
-
+    let open = openSetupSection === "weeklyRequirements" ? "open" : "";
     return `
         <details class="setupSection" name="setupSections" data-section="weeklyRequirements" ${open}>
         <summary>Minimum lessons per week</summary>
         <div id="weeklyRequirementList">${assignments.map(function(requirement, index){
             return requirementRow(config, requirement, index);
-        })}.join("")</div>
+        }).join("")}</div>
             <button type="button" id="addWeeklyRequirement">Add requirement</button>
-        <details>
+        </details>
         `;
 }
 
 export function listenWeeklyRequirements(panel, config, renderSetup){
-    let assignemnts = getAssignments(config);
+    let assignments = getAssignments(config);
 
     document.getElementById("addWeeklyRequirement").addEventListener("click", function(){
-        assignemnts.push({
+        assignments.push({
             subjectId: "",
             className: "",
             teacherId: "",
@@ -67,13 +78,13 @@ export function listenWeeklyRequirements(panel, config, renderSetup){
     // aah fuck nah, not this shit again
     panel.querySelectorAll("[data-weekly-subject]").forEach(function(input){
         input.addEventListener("change", function(event){
-            assignemnts[Number(event.target.dataset.weeklySubject)].subjectId = event.target.value;
+            assignments[Number(event.target.dataset.weeklySubject)].subjectId = event.target.value;
         })
     })
 
     panel.querySelectorAll("[data-weekly-class]").forEach(function(input){
         input.addEventListener("change", function(event){
-            assignemnts[Number(event.target.dataset.weeklyClass)].className = event.target.value
+            assignments[Number(event.target.dataset.weeklyClass)].className = event.target.value
         })
     })
 
@@ -81,19 +92,19 @@ export function listenWeeklyRequirements(panel, config, renderSetup){
 
     panel.querySelectorAll("[data-weekly-teacher]").forEach(function(input){
         input.addEventListener("change", function(event){
-            assignemnts[Number(event.target.dataset.weeklyTeacher)].teacherId = event.target.value;
+            assignments[Number(event.target.dataset.weeklyTeacher)].teacherId = event.target.value;
         })
     })
 
-    panel.querySelectorAll("data-weekly-min").forEach(function(input){
+    panel.querySelectorAll("[data-weekly-min]").forEach(function(input){
         input.addEventListener("change", function(event){
-            assignemnts[Number(event.target.weeklyMin)].minimumPerWeek = Number(event.target.value);
+            assignments[Number(event.target.dataset.weeklyMin)].minimumPerWeek = Number(event.target.value);
         })
     })
 
     panel.querySelectorAll("[data-remove-weekly]").forEach(function(button){
         button.addEventListener("click", function(event){
-            assignemnts.splice(Number(event.target.dataset.removeWeekly), 1);
+            assignments.splice(Number(event.target.dataset.removeWeekly), 1);
             renderSetup()
         })
     })
@@ -101,16 +112,16 @@ export function listenWeeklyRequirements(panel, config, renderSetup){
 
 export function weeklyRequirementErrors(config){
     let errors = [];
-    let assignemnts = getAssignments(config);
+    let assignments = getAssignments(config);
     let classNames = [];
 
     config.grades.forEach(function(grade){
-        grade.sections.forEach(function(grade){
+        grade.sections.forEach(function(section){
             classNames.push(grade.name + "-" + section)
         })
     })
 
-    assignemnts.forEach(function(requirement, index){
+    assignments.forEach(function(requirement, index){
         let subjectExists = config.subjects.some(function(subject){
             return subject.id == requirement.subjectId
         })
