@@ -1,4 +1,5 @@
-import { config, newId, saveConfig } from "./store.js";
+import {config, newId, saveConfig} from "./store.js";
+import {renderWeeklyRequirements, listenWeeklyRequirements, weeklyRequirementErrors } from "./weeklyRequirements.js";
 
 const panel = document.getElementById("setupPanel");
 let openSetupSection = "school";
@@ -112,7 +113,7 @@ export function renderSetup(){
             <div id="gradeList">${config.grades.map(gradeBlock).join("")}</div>
             <button type="button" id="addGrade">Add grade</button>
         </details>
-
+    ${renderWeeklyRequirements(config, openSetupSection)}
         <button type="button" id="checkSetup">Check setup</button>
         <p id="setupMessage"></p>
         </div>
@@ -138,6 +139,7 @@ export function renderSetup(){
 // i dont want to throw all those efforts to waste
 // im js gonna copy paste a million time
 function listen(){
+listenWeeklyRequirements(panel, config, renderSetup)
     document.getElementById("schoolName").addEventListener("input", function (e) {
         config.school = e.target.value;
     });
@@ -311,6 +313,8 @@ function listen(){
         ){
             errors.push("Move breaks to after a period from 1 to " + config.periodsPerDay + ".");
         }
+
+        errors.push(...weeklyRequirementErrors(config));
 
         let message = document.getElementById("setupMessage");
 
