@@ -76,4 +76,25 @@ export function listenWeeklyRequirements(panel, config, renderSetup){
             assignemnts[Number(event.target.dataset.weeklyClass)].className = event.target.value
         })
     })
+
+    // oops i forgot there are like 2 more of these, fuhh
+
+    panel.querySelectorAll("[data-weekly-teacher]").forEach(function(input){
+        input.addEventListener("change", function(event){
+            assignemnts[Number(event.target.dataset.weeklyTeacher)].teacherId = event.target.value;
+        })
+    })
+
+    panel.querySelectorAll("data-weekly-min").forEach(function(input){
+        input.addEventListener("change", function(event){
+            assignemnts[Number(event.target.weeklyMin)].minimumPerWeek = Number(event.target.value);
+        })
+    })
+
+    panel.querySelectorAll("[data-remove-weekly]").forEach(function(button){
+        button.addEventListener("click", function(event){
+            assignemnts.splice(Number(event.target.dataset.removeWeekly), 1);
+            renderSetup()
+        })
+    })
 }
