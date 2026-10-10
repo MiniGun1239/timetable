@@ -151,6 +151,63 @@ def create(config: Config) -> list[Timetable]:
                 if teacher_period_vars:
                     model.Add(sum(teacher_period_vars) <= 1)
 
+        # Constraint 4: Back-to-back Policies (FORCE / FORBID)
+        for sec in sec_list:
+            sec_id = get_attr(sec, 'id')
+            sec_subjects = get_attr(sec, 'subjects', [])  # [cite: 2]
+
+            for sub_id in sec_subjects:
+                sub_obj = sub_map.get(sub_id)
+                policy = get_attr(sub_obj, 'back2back')
+
+                if not policy:
+                    continue
+
+                # Convert enum or string value safely
+                policy_val = policy.value if hasattr(policy, 'value') else policy
+
+                if policy_val == "FORBID":
+                    # Forbid same subject in consecutive periods on the same day
+                    for d in days:
+                        for p in range(periods_count - 1):
+                            # Find all teacher variables for period p and period p+1
+                            p_vars = [
+                                x[(sec_id, d, p, sub_id, get_attr(t, 'id'))]
+                                for t in teach_list
+                                if sub_id in get_attr(t, 'subjects', [])  # [cite: 4]
+                                   and (sec_id, d, p, sub_id, get_attr(t, 'id')) in x
+                            ]
+                            p_next_vars = [
+                                x[(sec_id, d, p + 1, sub_id, get_attr(t, 'id'))]
+                                for t in teach_list
+                                if sub_id in get_attr(t, 'subjects', [])  # [cite: 4]
+                                   and (sec_id, d, p + 1, sub_id, get_attr(t, 'id')) in x
+                            ]
+                            if p_vars and p_next_vars:
+                                # They cannot BOTH be 1
+                                model.Add(sum(p_vars) + sum(p_next_vars) <= 1)
+
+                elif policy_val == "FORCE":
+                    # Force double periods: if it occurs at p, it MUST occur at p+1 (unless it's an odd-ending pattern,
+                    # but standard implementation enforces that an isolated instance is barred)
+                    for d in days:
+                        for p in range(periods_count - 1):
+                            p_vars = [
+                                x[(sec_id, d, p, sub_id, get_attr(t, 'id'))]
+                                for t in teach_list
+                                if sub_id in get_attr(t, 'subjects', [])  # [cite: 4]
+                                   and (sec_id, d, p, sub_id, get_attr(t, 'id')) in x
+                            ]
+                            p_next_vars = [
+                                x[(sec_id, d, p + 1, sub_id, get_attr(t, 'id'))]
+                                for t in teach_list
+                                if sub_id in get_attr(t, 'subjects', [])  # [cite: 4]
+                                   and (sec_id, d, p + 1, sub_id, get_attr(t, 'id')) in x
+                            ]
+                            if p_vars and p_next_vars:
+                                # If subject is at p, it must be at p+1 (sum(p_vars) <= sum(p_next_vars))
+                                model.Add(sum(p_vars) <= sum(p_next_vars))
+
     # Solve the model
     solver = cp_model.CpSolver()
     solver.parameters.max_time_in_seconds = 30.0
