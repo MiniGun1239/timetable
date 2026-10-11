@@ -13,14 +13,23 @@ class Teacher:
     subjects: list[int]
     section: int | None = None
 
+    # --- BASICS ---
     _instances: ClassVar[list] = []
 
     def __post_init__(self):
-        self._instances.append(self)
+        if self not in self._instances:
+            self._instances.append(self)
 
     def __repr__(self):
         return f"{self.name}: id={self.id}, subjects={self.subjects}{f", section = {self.section}" if self.section else ""}"
 
+    @classmethod
+    def getInstances(cls):
+        return cls._instances
+
+
+    # --- SAVING AND LOADING ---
+    # --- Core ---
     def serialize(self) -> dict:
         return asdict(self)
 
@@ -33,9 +42,30 @@ class Teacher:
             section=data.get("section")
         )
 
+    def append(self):
+        with open(TEACHER_DATA, "r", encoding="utf-8") as teach_data:
+            all_teachs: list[dict] = json.load(teach_data)
+
+        all_teachs.append(self.serialize())
+
+        self.__class__.save_all()
+
+    # --- SAVE AND LOAD ALL
     @classmethod
-    def getInstances(cls):
-        return cls._instances
+    def save_all(cls):
+        all_teachs = [teacher.serialize() for teacher in cls.getInstances()]
+
+        with open(TEACHER_DATA, "w", encoding="utf-8") as teach_data:
+            json.dump(all_teachs, teach_data, indent=2)
+
+    @classmethod
+    def load_all(cls):
+        with open(TEACHER_DATA, "r", encoding="utf-8") as teach_data:
+            all_teachs: list[dict] = json.load(teach_data)
+
+        for teacher in all_teachs:
+            Teacher.deserialize(teacher)
+        return
 
 
 def samples():
@@ -86,22 +116,8 @@ def samples():
     }
 
 
-def save_all():
-    all_teachs = [teacher.serialize() for teacher in Teacher.getInstances()]
-
-    with open(TEACHER_DATA, "w", encoding="utf-8") as teach_data:
-        json.dump(all_teachs, teach_data, indent=2)
-
-def load_all():
-    with open(TEACHER_DATA, "r", encoding="utf-8") as teach_data:
-        all_teachs: list[dict] = json.load(teach_data)
-
-    for teacher in all_teachs:
-        Teacher.deserialize(teacher)
-
-
 if __name__ == "__main__":
-    samples()
+    Teacher.load_all()
     teachers = Teacher.getInstances()
 
     for teacher in teachers:
