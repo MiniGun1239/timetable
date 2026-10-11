@@ -32,21 +32,21 @@ def generate_schedule(data):
             classes.append(class_name)
 
     if len(classes) == 0:
-            raise ValueError("Add a class")
+        raise ValueError("Add a class")
 
     if len(subjects) == 0 or len(teachers) == 0:
-            raise ValueError("Add atleast 1 subject and teacher")
+        raise ValueError("Add atleast 1 subject and teacher")
 
     allowed_lessons = {}
 
     for class_name in classes:
-            allowed_lessons[class_name] = []
+        allowed_lessons[class_name] = []
 
     for requirement in requirements:
-            class_name = requirement.get("class_name")
-            subject_id = requirement.get("subjectId")
-            teacher_id = requirement.get("teacherId")
-            minimum = requirement.get("minimumPerWeek")
+        class_name = requirement.get("className")
+        subject_id = requirement.get("subjectId")
+        teacher_id = requirement.get("teacherId")
+        minimum = requirement.get("minimumPerWeek")
 
         if class_name not in classes:
-            raise ValueError("Weekly requirement has an unknow class")
+            raise ValueError("Weekly requirement has an unknown class")
