@@ -1,5 +1,6 @@
 # --- IMPORTS ---
-from flask import Flask, render_template
+from flask import Flask, render_template, request, jsonify
+from solver import generate_schedule
 from constants import *
 # --- End of IMPORTS
 
@@ -26,7 +27,17 @@ def hello_world():
 
 @app.route('/api/generate', methods=['POST'])
 def generate():
-    pass
+    data = request.get_json(silent=True)
+
+    if not isinstance(data, dict):
+        return jsonify({"error": "Send the setup as JSON"}), 400
+
+    try:
+        schedule = generate_schedule(data)
+        return jsonify(schedule)
+
+    except ValueError as error:
+        return jsonify({"error": str(error)}), 400
 # --- END OF HTML ROUTING ---
 
 

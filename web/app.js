@@ -31,7 +31,8 @@ try {
     })
 
     if (!response.ok){
-        throw new Error("Something's wrong with the server")
+        let result = await response.json()
+        throw new Error(result.error || "Timetable couldnt be generated")
     }
 
     let schedule = await response.json();
