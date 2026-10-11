@@ -37,13 +37,13 @@ function teacherRow(t, i){
     let subjectChecks = config.subjects.map(function(subject){
         return `
             <label>
-                <input type="checkbox" data-teacher-subject="{i}" value="${esc(subject.id)}" ${subjectIds.includes(subject.id) ? "checked" : ""}>
+                <input type="checkbox" data-teacher-subject="${i}" value="${esc(subject.id)}" ${subjectIds.includes(subject.id) ? "checked" : ""}>
                 ${esc(subject.name)} </label>`
     }).join("")
 
     return `
         <div class="row">
-            <label>Name <input type="text" data-tname="${i} value="${esc(t.name)}"></label>
+            <label>Name <input type="text" data-tname="${i}" value="${esc(t.name)}"></label>
             <label>Max per day<input type="number" data-tmax="${i}" value="${t.maxPerDay}" min="0" max="20"></label>
             <button type="button" data-remove-t="${i}">Remove</button>
             <div class="teacherSubjects">
@@ -225,14 +225,14 @@ listenWeeklyRequirements(panel, config, renderSetup)
         })
     })
 
-    panel.querySelectorAll("data-teacher-subject").forEach(function(box){
+    panel.querySelectorAll("[data-teacher-subject]").forEach(function(box){
         box.addEventListener("change", function(event){
             let teacher = config.teachers[
                 Number(event.target.dataset.teacherSubject)
             ]
             let subjectId = event.target.value;
 
-            if(!teacher.subjectId){
+            if(!teacher.subjectIds){
                 teacher.subjectIds = [];
             }
 
@@ -240,7 +240,7 @@ listenWeeklyRequirements(panel, config, renderSetup)
                 teacher.subjectIds.push(subjectId);
             }
             else {
-                teacher.subjectsIds = teacher.subjectIds.filter(function(id){
+                teacher.subjectIds = teacher.subjectIds.filter(function(id){
                     return id !== subjectId
                 })
             }

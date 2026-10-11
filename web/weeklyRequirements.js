@@ -32,8 +32,7 @@ function requirementRow(config, requirement, index){
     })
 
 let matchingTeachers = config.teachers.filter(function(teacher){
-    return (teacher.subjectIds || [].includes(requirement.subjectId))
-})
+    return (teacher.subjectIds || []).includes(requirement.subjectId);})
 
 let teacherOptions = `<option value="">Choose teacher</option>` + matchingTeachers.map(function(teacher){
     return `<option value="${escapeHtml(teacher.id)}"
@@ -137,11 +136,11 @@ export function weeklyRequirementErrors(config){
             return subject.id == requirement.subjectId
         })
 
-        let choosenTeacher = config.teacher.find(function(teacher){
-            return teacher.id == requirement.teacherId
-        })
-        
-        let teacherCanTeach = choosenTeacher && (choosenTeacher.subjectIds || []).includes(requirement.subjectIds)
+     let chosenTeacher = config.teachers.find(function(teacher){
+        return teacher.id == requirement.teacherId
+     })
+
+    let teacherCanTeach = chosenTeacher && (chosenTeacher.subjectIds || []).includes(requirement.subjectId);
 
         // umm the stupid add errors, why do you even need these lol
         if (!subjectExists || !classNames.includes(requirement.className) || !teacherCanTeach){

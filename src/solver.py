@@ -57,7 +57,7 @@ def generate_schedule(data):
             if subject.get("id") == subject_id:
                 subject_exists = True
 
-        teacher_exists = False
+        teacher_can_teach = False
         for teacher in teachers:
             if teacher.get("id") == teacher_id:
                 if subject_id in teacher.get("subjectIds", []):
