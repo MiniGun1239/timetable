@@ -151,10 +151,7 @@ export function weeklyRequirementErrors(config){
             errors.push("Requirement " + (index + 1 + ": minimum lessons must be positive bruhh"))
         }
 
-        if (config.days.length > 0 && Number.isInteger(config.periodsPerDay) && 
-            requirement.minimumPerWeek > config.days.length * config.periodsPerDay){
-            errors.push("Requirement " + (index + 1) + ": weekly minumum cant be larger than available periods");
-        }
+        if (index < assignments.length - 1) return;
 
         let weeklyTotals = {}
 
@@ -170,7 +167,7 @@ export function weeklyRequirementErrors(config){
 
             Object.keys(weeklyTotals).forEach(function(className){
                 if (weeklyTotals[className] > availablePeriods){
-                    errors.push(className + "needs" + weeklyTotals[className] + " lessons, but only " + availablePeriods + " periods are available")
+                    errors.push(className + " needs " + weeklyTotals[className] + " lessons, but only " + availablePeriods + " periods are available")
                 }
             })
         }
