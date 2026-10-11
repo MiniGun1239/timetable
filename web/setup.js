@@ -31,14 +31,28 @@ function breakRow(b, i){
 }
 
 function teacherRow(t, i){
-    // aaaaaaaaaaaaaaa not the html again
+
+    let subjectIds = t.subjectIds || [];
+
+    let subjectChecks = config.subjects.map(function(subject){
+        return `
+            <label>
+                <input type="checkbox" data-teacher-subject="{i}" value="${esc(subject.id)}" ${subjectIds.includes(subject.id) ? "checked" : ""}>
+                ${esc(subject.name)} </label>`
+    }).join("")
+
     return `
         <div class="row">
-            <label>Name <input type="text" data-tname="${i}" value="${esc(t.name)}"> </label>
-            <label>Max per day <input type="number" data-tmax="${i}" value="${t.maxPerDay}" min="0" max="20"> </label>
+            <label>Name <input type="text" data-tname="${i} value="${esc(t.name)}"></label>
+            <label>Max per day<input type="number" data-tmax="${i}" value="${t.maxPerDay}" min="0" max="20"></label>
             <button type="button" data-remove-t="${i}">Remove</button>
+            <div class="teacherSubjects">
+                <strong>Can teach:</strong>
+                ${subjectChecks || "<span>Add subjects first</span>"}
+            </div>
         </div>
-    `
+            `
+
 }
 
 function subjectRow(s, i){
@@ -211,6 +225,29 @@ listenWeeklyRequirements(panel, config, renderSetup)
         })
     })
 
+    panel.querySelectorAll("data-teacher-subject").forEach(function(box){
+        box.addEventListener("change", function(event){
+            let teacher = config.teachers[
+                Number(event.target.dataset.teacherSubject)
+            ]
+            let subjectId = event.target.value;
+
+            if(!teacher.subjectId){
+                teacher.subjectIds = [];
+            }
+
+            if (event.target.checked){
+                teacher.subjectIds.push(subjectId);
+            }
+            else {
+                teacher.subjectsIds = teacher.subjectIds.filter(function(id){
+                    return id !== subjectId
+                })
+            }
+            renderSetup()
+        })
+    })
+
     panel.querySelectorAll("[data-remove-t]").forEach(function (btn){
         btn.addEventListener("click", function (e){
             config.teachers.splice(Number(e.target.dataset.removeT), 1);
@@ -219,7 +256,7 @@ listenWeeklyRequirements(panel, config, renderSetup)
     })
 
     document.getElementById("addTeacher").addEventListener("click", function(){
-        config.teachers.push({id: newId("t"), name: "", maxPerDay: 6});
+        config.teachers.push({id: newId("t"), name: "", maxPerDay: 6, subjectIds: []});
         renderSetup();
     })
     // omfg there must be some way of not writing all this 

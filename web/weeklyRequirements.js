@@ -31,9 +31,16 @@ function requirementRow(config, requirement, index){
         })
     })
 
-let teacherOptions = `<option value="">Choose teacher</option>` + config.teachers.map(function(teacher){
-            return `<option value="${escapeHtml(teacher.id)}" ${requirement.teacherId === teacher.id ? "selected" : ""}> ${escapeHtml(teacher.name)}</option>`
-    }).join("")
+let matchingTeachers = config.teachers.filter(function(teacher){
+    return (teacher.subjectIds || [].includes(requirement.subjectId))
+})
+
+let teacherOptions = `<option value="">Choose teacher</option>` + matchingTeachers.map(function(teacher){
+    return `<option value="${escapeHtml(teacher.id)}"
+    ${requirement.teacherId === teacher.id ? "selected" : ""}>
+    ${escapeHtml(teacher.name)}
+    </option>`
+}).join("")
 
     // so this is for the million event handlers im gonna write in the end lol 
     return `
@@ -78,7 +85,11 @@ export function listenWeeklyRequirements(panel, config, renderSetup){
     // aah fuck nah, not this shit again
     panel.querySelectorAll("[data-weekly-subject]").forEach(function(input){
         input.addEventListener("change", function(event){
-            assignments[Number(event.target.dataset.weeklySubject)].subjectId = event.target.value;
+            let index = Number(event.target.dataset.weeklySubject);
+            assignments[index].subjectId = event.target.value;
+
+            assignments[index].teacherId = ""
+            renderSetup() 
         })
     })
 
@@ -126,13 +137,14 @@ export function weeklyRequirementErrors(config){
             return subject.id == requirement.subjectId
         })
 
-        let teacherExists = config.teachers.some(function(teacher){
+        let choosenTeacher = config.teacher.find(function(teacher){
             return teacher.id == requirement.teacherId
         })
-
+        
+        let teacherCanTeach = choosenTeacher && (choosenTeacher.subjectIds || []).includes(requirement.subjectIds)
 
         // umm the stupid add errors, why do you even need these lol
-        if (!subjectExists || !classNames.includes(requirement.className) || !teacherExists){
+        if (!subjectExists || !classNames.includes(requirement.className) || !teacherCanTeach){
             errors.push("Requirement " + (index + 1) + ": choose a subject, class, and teacher")
         }
 

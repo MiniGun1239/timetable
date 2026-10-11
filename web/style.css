@@ -70,6 +70,13 @@ input {
     margin: 6px 0;
 }
 
+.teacherSubjects {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    flex-basis: 100%;
+}
+
 .weeklyRequirementRow {
     flex-wrap: wrap;
 }

@@ -60,10 +60,11 @@ def generate_schedule(data):
         teacher_exists = False
         for teacher in teachers:
             if teacher.get("id") == teacher_id:
-                teacher_exists = True
+                if subject_id in teacher.get("subjectIds", []):
+                    teacher_can_teach = True
 
-        if not subject_exists or not teacher_exists:
-            raise ValueError("Weekly requirement has unknown teacher or subject")
+        if not subject_exists or not teacher_can_teach:
+            raise ValueError("Weekly requirement has unknown subject or a teacher that cant teach the subject you chose")
 
         if type(minimum) is not int or minimum < 1:
             raise ValueError("Minimum hours must be a positive number")
