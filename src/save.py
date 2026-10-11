@@ -1,20 +1,9 @@
-from objects.config import Config
-from objects.subject import Subject
-from objects.section import Section
-from objects.teacher import Teacher
-
-def teacher(teacher: Teacher):
-    pass
+from objects import section, subject, teacher, config, timetable
 
 
-def section(section: Section):
-    pass
-
-
-def subject(subject: Subject):
-    pass
-
-
-def config(config: Config):
-    pass
-
+def save_all():
+    section.save_all()
+    subject.save_all()
+    teacher.save_all()
+    config.save()
+    timetable.save_all()
