@@ -17,6 +17,50 @@ export function displayGeneratedSchedule(scheduleData){
     renderTimetables();
 }
 
+// uhh the format check, to see of they can import json or not
+
+function isValidSchedule(data){
+    if (!data || typeof data !== "object" || Array.isArray(data)){
+        return false;
+    }
+
+    if (Object.keys(data).length === 0){
+        return false;
+    }
+
+    return Object.entries(data).every(function([className, slots]){
+        // so these are the checks
+        if (
+            typeof className !== "string" || !/^[A-Za-z0-9 _-]+$/.test(className) || !slots || typeof slots !== "object" || Array.isArray(slots)
+        ){
+            return false;
+        }
+
+        return Object.entries(slots).every(function([slot, lesson]){
+            let parts = slot.split(" ");
+            if (parts.length !== 2) return false
+
+            let day = parts[0]
+            let periodName = parts[1]
+            let period = Number(periodName.slice(1))
+
+            if (!config.days.includes(day) || !/^P\d+$/.test(periodName || "") || period < 1 || period > config.periodsPerDay)
+            {
+                return false;
+            }
+
+            if (lesson === null)
+                return true
+
+            return (lesson && typeof lesson === "object" && !Array.isArray(lesson) &&
+                    (typeof lesson.subject === "string" || typeof lesson.subject === "number") &&
+                    /^[A-Za-z0-9_-]+$/.test(String(lesson.subject)) &&
+                    (typeof lesson.teacher === "string" || typeof lesson.teacher === "number") &&
+                        /^[A-Za-z0-9_-]+$/.test(String(lesson.teacher)))
+        })
+    })
+}
+
 export function renderTimetables(){
     let names = Object.keys(schedule);
     if (!picked && names.length) picked = names[0];
@@ -86,6 +130,9 @@ for (let p = 1; p <= config.periodsPerDay; p++){
     </section>
         <button type="button" id="printTimetable">Print / Save as PDF</button>
         <button type="button" id="downloadJson">Download JSON</button>
+        <button type="button" id="importJson">Import JSON</button>
+        <input type="file" id="importJsonFile" accept=".json,application/json" hidden>
+        <p id="importMessage" aria-live="polite"></p>
         <div id="gridBox"></div>
     `;
 
@@ -135,6 +182,49 @@ for (let p = 1; p <= config.periodsPerDay; p++){
         link.href = URL.createObjectURL(file);
         link.download = "timetable.json"
         link.click();
+    })
+
+    let importJsonFile = document.getElementById("importJsonFile");
+
+    document.getElementById("importJson").addEventListener("click", function(){
+        importJsonFile.click()
+    })
+
+    importJsonFile.addEventListener("change", async function(){
+        let file = importJsonFile.files[0]
+
+        if (!file) return;
+
+        try {
+            let text = await file.text()
+            let importedSchedule;
+
+            try {
+                importedSchedule = JSON.parse(text);
+            }
+
+            catch {
+                throw new Error("That file isnt valid JSON")
+            }
+
+            if (!isValidSchedule(importedSchedule)){
+                throw new Error("That file isnt in timetable JSON format")
+            }
+
+            displayGeneratedSchedule(importedSchedule);
+
+            let message = document.getElementById("importMessage");
+                message.textContent = "Timetable imported";
+                message.className = "validationMessage success"
+        }
+
+            catch (error){
+                let message = document.getElementById("importMessage");
+                message.textContent = error.message;
+                message.className = "validationMessage error"
+        }
+            importJsonFile.value = "";
+
     })
 
         renderFreeTeachers()
@@ -548,4 +638,3 @@ function teacherName(id){
 
         return `<table class="grid">${header}${rows}</table>`
     }
-    
