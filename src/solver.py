@@ -53,9 +53,9 @@ def generate_schedule(data):
             raise ValueError("Weekly requirement has an unknown class")
 
         subject_exists = False
-        for teacher in teachers:
-            if teacher.get("id") == teacher_id:
-                teacher_exists = True
+        for subject in subjects:
+            if subject.get("id") == subject_id:
+                subject_exists = True
 
         teacher_exists = False
         for teacher in teachers:
@@ -122,64 +122,76 @@ def generate_schedule(data):
 
                 for lesson in lessons:
                     if (lesson["teacher"] == teacher_id and lesson["day"] == day and lesson["period"] == period):
-                            teacher_lessons.append(lesson["variable"])
+                        teacher_lessons.append(lesson["variable"])
 
-                    model.Add(sum(teacher_lessons) <= 1)
+                model.Add(sum(teacher_lessons) <= 1)
 
-                for teacher in teachers:
-                    teacher_id = teacher.get("id")
-                    daily_limit = teacher.get("maxPerDay", periods)
+    for teacher in teachers:
+        teacher_id = teacher.get("id")
+        daily_limit = teacher.get("maxPerDay", periods)
     # python is so weird, idk just too much like english
-                    if type(daily_limit) is not int or daily_limit < 0:
-                        raise ValueError("Enter valid daily limit for the teachers")
+        if type(daily_limit) is not int or daily_limit < 0:
+            raise ValueError("Enter valid daily limit for the teachers")
 
-                    for day in days:
-                        teacher_day = []
+        for day in days:
+            teacher_day = []
 
-                        for lession in lessons:
-                            if lesson["teacher"] == teacher_id and lesson["day"] == day:
-                                teacher_day.append(lesson["variable"])
+            for lesson in lessons:
+                if lesson["teacher"] == teacher_id and lesson["day"] == day:
+                    teacher_day.append(lesson["variable"])
 
-                        model.Add(sum(teacher_day) <= daily_limit)
+            model.Add(sum(teacher_day) <= daily_limit)
 
-                for subject in subjects:
-                    if subject.get("noBackToBack") is True:
-                        subject_id = subject.get("id")
+    for subject in subjects:
+        if subject.get("noBackToBack") is True:
+            subject_id = subject.get("id")
 
-                        for class_name in classes:
-                            for day in days:
-                                for period in range(periods - 1):
-                                    first_period = []
-                                    next_period = []
-
-                                    for lesson in lessons:
-                                        if (lesson["class"] == class_name and lesson["day"] == day and lesson["period"] == period and lesson["subject"] == subject_id):
-                                                first_period.append(lesson["variable"])
-
-                                        if (lesson["Class"] == class_name and lesson["day"] == day and lesson["period"] == period + 1 and lesson["subject"] == subject_id):
-                                                next_period.append(lesson["variable"])
-
-                                    model.Add(sum(matching_lessons) >= requirement["minimumPerWeek"])
-
-                        solver = cp_model.CpSolver()
-                        status = solver.Solve(model)
-
-                        if status != cp_model.OPTIONAL and status != cp_model.FEASIBLE:
-                            raise ValueError("A timetable cant be made from these setup rules")
-
-                        schedule = {}
-
-                        for class_name in classes:
-                            schedule[class_name] = {}
+            for class_name in classes:
+                for day in days:
+                    for period in range(periods - 1):
+                        first_period = []
+                        next_period = []
 
                         for lesson in lessons:
-                            if solver.Value(lesson["variable"]) == 1:
-                                slot = lesson["day"] + " P" + str(lesson["period"] + 1)
+                            if (lesson["class"] == class_name and lesson["day"] == day and lesson["period"] == period and lesson["subject"] == subject_id):
+                                first_period.append(lesson["variable"])
 
-                                schedule[lesson["class"][slot]] = {
-                                    "subject": lesson["subject"],
-                                    "teacher": lesson["teacher"]
-                                }
+                            if (lesson["class"] == class_name and lesson["day"] == day and lesson["period"] == period + 1 and lesson["subject"] == subject_id):
+                                next_period.append(lesson["variable"])
 
-                        return schedule
+                        model.Add(sum(first_period) + sum(next_period) <= 1)
+
+    solver = cp_model.CpSolver()
+    for requirement in requirements:
+        matching_lessons = []
+
+        for lesson in lessons:
+            if(
+                lesson["class"] == requirement["className"]
+                and lesson["subject"] == requirement["subjectId"]
+                and lesson["teacher"] == requirement["teacherId"]
+            ):
+                matching_lessons.append(lesson["variable"])
+
+        model.Add(sum(matching_lessons) >= requirement["minimumPerWeek"])
+    status = solver.Solve(model)
+
+    if status != cp_model.OPTIMAL and status != cp_model.FEASIBLE:
+        raise ValueError("A timetable cant be made from these setup rules")
+
+    schedule = {}
+
+    for class_name in classes:
+        schedule[class_name] = {}
+
+    for lesson in lessons:
+        if solver.Value(lesson["variable"]) == 1:
+            slot = lesson["day"] + " P" + str(lesson["period"] + 1)
+
+            schedule[lesson["class"]][slot] = {
+                "subject": lesson["subject"],
+                "teacher": lesson["teacher"]
+            }
+
+    return schedule
 

@@ -8,8 +8,15 @@ panel.addEventListener("input", saveConfig);
 panel.addEventListener("change", saveConfig);
 panel.addEventListener("click", saveConfig);
 
+// the exact same function as in weeklyRequirements
 function esc(text){
     return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+
 }
 
 function breakRow(b, i){
