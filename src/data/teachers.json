@@ -1,0 +1,61 @@
+[
+  {
+    "id": 1,
+    "name": "Sabin",
+    "subjects": [
+      1
+    ],
+    "section": 2
+  },
+  {
+    "id": 2,
+    "name": "Binesh",
+    "subjects": [
+      2
+    ],
+    "section": null
+  },
+  {
+    "id": 3,
+    "name": "Mehenaz",
+    "subjects": [
+      3,
+      9
+    ],
+    "section": null
+  },
+  {
+    "id": 4,
+    "name": "Rani",
+    "subjects": [
+      4,
+      10
+    ],
+    "section": null
+  },
+  {
+    "id": 5,
+    "name": "Divya",
+    "subjects": [
+      5,
+      8
+    ],
+    "section": null
+  },
+  {
+    "id": 6,
+    "name": "Sadia",
+    "subjects": [
+      6
+    ],
+    "section": null
+  },
+  {
+    "id": 7,
+    "name": "Mujeeb",
+    "subjects": [
+      7
+    ],
+    "section": null
+  }
+]
