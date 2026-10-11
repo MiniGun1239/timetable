@@ -306,6 +306,7 @@ function renderGrid(){
                     subject: subject.trim(),
                     teacher: teacher.trim()
                 }
+                setSchedule(schedule)
                 renderTimetables();
             })
         })
