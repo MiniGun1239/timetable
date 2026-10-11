@@ -1,6 +1,7 @@
 import { displayGeneratedSchedule, renderTimetables } from "./render.js";
 import {config} from "./store.js"
 import { renderSetup } from "./setup.js";
+import { weeklyRequirementErrors } from "./weeklyRequirements.js";
 
 renderSetup();
 renderTimetables();
@@ -18,6 +19,14 @@ generatePanel.innerHTML = `
 
 document.getElementById("makeTimetable").addEventListener("click", async function() {
     let message = document.getElementById("generateMessage");
+    
+    let errors = weeklyRequirementErrors(config)
+
+    if(errors.length){
+        message.textContent = errors.join("\n")
+        return
+    }
+
     message.textContent = "wait a sec"
 
 
@@ -65,4 +74,4 @@ tabNames.forEach(function(name){
             renderTimetables();
         }
     })
-}) 
+})

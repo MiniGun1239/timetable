@@ -155,6 +155,25 @@ export function weeklyRequirementErrors(config){
             requirement.minimumPerWeek > config.days.length * config.periodsPerDay){
             errors.push("Requirement " + (index + 1) + ": weekly minumum cant be larger than available periods");
         }
+
+        let weeklyTotals = {}
+
+        assignments.forEach(function(requirement){
+            if (classNames.includes(requirement.className) && Number.isInteger(requirement.minimumPerWeek) && requirement.minimumPerWeek > 0)
+            {
+                weeklyTotals[requirement.className] = (weeklyTotals[requirement.className] || 0) + requirement.minimumPerWeek
+            }
+        })
+
+        if (config.days.length > 0 && Number.isInteger(config.periodsPerDay) && config.periodsPerDay > 0){
+            let availablePeriods = config.days.length * config.periodsPerDay;
+
+            Object.keys(weeklyTotals).forEach(function(className){
+                if (weeklyTotals[className] > availablePeriods){
+                    errors.push(className + "needs" + weeklyTotals[className] + " lessons, but only " + availablePeriods + " periods are available")
+                }
+            })
+        }
 })
 
 return errors;
