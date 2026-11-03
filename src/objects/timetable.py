@@ -1,6 +1,8 @@
+import json
 from dataclasses import dataclass, asdict, field
 from ortools.sat.python import cp_model
 
+from constants import TIMETABLE_DATA
 from objects import config, Section, Subject, Teacher
 
 Config = config.Config
@@ -46,6 +48,10 @@ class Timetable:
             data["section"],
             data["rows"],
         )
+
+    @classmethod
+    def getInstances(cls):
+        return cls._instances
 
 
 def create(config: Config) -> list[Timetable]:
@@ -254,8 +260,22 @@ def create(config: Config) -> list[Timetable]:
     return timetables
 
 
+def save_all():
+    all_tts = [timetable.serialize() for timetable in Timetable.getInstances()]
+
+    with open(TIMETABLE_DATA, 'w', encoding="utf_8") as tt_data:
+        json.dump(all_tts, tt_data, indent=2)
+
+
+def load_all():
+    all_tts = json.load(open(TIMETABLE_DATA, 'r', encoding="utf_8"))
+
+    for timetable in all_tts:
+        Teacher.deserialize(timetable)
+
+
 if __name__ == "__main__":
-    configuration = config.sample()
+    configuration = Config.load()
 
     timetables = create(configuration)
     for tt in timetables:

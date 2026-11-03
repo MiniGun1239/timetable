@@ -5,6 +5,10 @@ from typing import ClassVar
 from constants import CONFIG_DATA
 from objects import section, subject, teacher
 
+Section = section.Section
+Subject = subject.Subject
+teacher = teacher.Teacher
+
 
 @dataclass
 class Config:
@@ -61,7 +65,7 @@ class Config:
 
 def sample():
     teachers = teacher.samples()
-    sections = list(section.samples().values())
+    sections = list[Section](section.samples().values())
     subjects = list(subject.samples().values())
 
     days = ["mon", "tue", "wed", "thu", "fri"]

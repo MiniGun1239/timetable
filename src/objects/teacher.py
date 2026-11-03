@@ -1,6 +1,5 @@
 import json
-import weakref
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, asdict
 from typing import ClassVar
 
 from constants import TEACHER_DATA
