@@ -31,9 +31,15 @@ function requirementRow(config, requirement, index){
         })
     })
 
-let teacherOptions = `<option value="">Choose teacher</option>` + config.teachers.map(function(teacher){
-            return `<option value="${escapeHtml(teacher.id)}" ${requirement.teacherId === teacher.id ? "selected" : ""}> ${escapeHtml(teacher.name)}</option>`
-    }).join("")
+let matchingTeachers = config.teachers.filter(function(teacher){
+    return (teacher.subjectIds || []).includes(requirement.subjectId);})
+
+let teacherOptions = `<option value="">Choose teacher</option>` + matchingTeachers.map(function(teacher){
+    return `<option value="${escapeHtml(teacher.id)}"
+    ${requirement.teacherId === teacher.id ? "selected" : ""}>
+    ${escapeHtml(teacher.name)}
+    </option>`
+}).join("")
 
     // so this is for the million event handlers im gonna write in the end lol 
     return `
@@ -78,7 +84,11 @@ export function listenWeeklyRequirements(panel, config, renderSetup){
     // aah fuck nah, not this shit again
     panel.querySelectorAll("[data-weekly-subject]").forEach(function(input){
         input.addEventListener("change", function(event){
-            assignments[Number(event.target.dataset.weeklySubject)].subjectId = event.target.value;
+            let index = Number(event.target.dataset.weeklySubject);
+            assignments[index].subjectId = event.target.value;
+
+            assignments[index].teacherId = ""
+            renderSetup() 
         })
     })
 
@@ -126,13 +136,14 @@ export function weeklyRequirementErrors(config){
             return subject.id == requirement.subjectId
         })
 
-        let teacherExists = config.teachers.some(function(teacher){
-            return teacher.id == requirement.teacherId
-        })
+     let chosenTeacher = config.teachers.find(function(teacher){
+        return teacher.id == requirement.teacherId
+     })
 
+    let teacherCanTeach = chosenTeacher && (chosenTeacher.subjectIds || []).includes(requirement.subjectId);
 
         // umm the stupid add errors, why do you even need these lol
-        if (!subjectExists || !classNames.includes(requirement.className) || !teacherExists){
+        if (!subjectExists || !classNames.includes(requirement.className) || !teacherCanTeach){
             errors.push("Requirement " + (index + 1) + ": choose a subject, class, and teacher")
         }
 
@@ -140,9 +151,25 @@ export function weeklyRequirementErrors(config){
             errors.push("Requirement " + (index + 1 + ": minimum lessons must be positive bruhh"))
         }
 
-        if (config.days.length > 0 && Number.isInteger(config.periodsPerDay) && 
-            requirement.minimumPerWeek > config.days.length * config.periodsPerDay){
-            errors.push("Requirement " + (index + 1) + ": weekly minumum cant be larger than available periods");
+        if (index < assignments.length - 1) return;
+
+        let weeklyTotals = {}
+
+        assignments.forEach(function(requirement){
+            if (classNames.includes(requirement.className) && Number.isInteger(requirement.minimumPerWeek) && requirement.minimumPerWeek > 0)
+            {
+                weeklyTotals[requirement.className] = (weeklyTotals[requirement.className] || 0) + requirement.minimumPerWeek
+            }
+        })
+
+        if (config.days.length > 0 && Number.isInteger(config.periodsPerDay) && config.periodsPerDay > 0){
+            let availablePeriods = config.days.length * config.periodsPerDay;
+
+            Object.keys(weeklyTotals).forEach(function(className){
+                if (weeklyTotals[className] > availablePeriods){
+                    errors.push(className + " needs " + weeklyTotals[className] + " lessons, but only " + availablePeriods + " periods are available")
+                }
+            })
         }
 })
 
