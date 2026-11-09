@@ -175,7 +175,11 @@ def generate_schedule(data):
                 matching_lessons.append(lesson["variable"])
 
         model.Add(sum(matching_lessons) >= requirement["minimumPerWeek"])
+    solver.parameters.max_time_in_seconds = 30
     status = solver.Solve(model)
+
+    if status == cp_model.UNKNOWN:
+        raise ValueError("Generation timed out. Try fewer classes or simpler rules.")
 
     if status != cp_model.OPTIMAL and status != cp_model.FEASIBLE:
         raise ValueError("A timetable cant be made from these setup rules")

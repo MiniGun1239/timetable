@@ -27,7 +27,9 @@ document.getElementById("makeTimetable").addEventListener("click", async functio
         return
     }
 
-    message.textContent = "wait a sec"
+    let button = document.getElementById("makeTimetable");
+    button.disabled = true;
+    message.textContent = "Generating timetable..."
 
 
 //lowk i could have used node js 
@@ -46,11 +48,15 @@ try {
 
     let schedule = await response.json();
     displayGeneratedSchedule(schedule);
+    document.getElementById("timetables").click();
     message.textContent = "Worked! Open timetables to see it"
 }
 
 catch (error){
     message.textContent = error.message;
+}
+finally {
+    button.disabled = false;
 }
 });
 

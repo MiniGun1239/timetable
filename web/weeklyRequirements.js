@@ -131,6 +131,12 @@ export function weeklyRequirementErrors(config){
         })
     })
 
+    classNames.forEach(function(className){
+        if (!assignments.some(function(requirement){ return requirement.className === className; })){
+            errors.push("Add a weekly requirement for " + className + ".");
+        }
+    });
+
     assignments.forEach(function(requirement, index){
         let subjectExists = config.subjects.some(function(subject){
             return subject.id == requirement.subjectId
