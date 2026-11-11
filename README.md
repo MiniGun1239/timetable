@@ -1,11 +1,26 @@
 # timetable
 
-A school timetable generator built with - 
-Python, flask, HTML, CSS and JavaScript.
+Timetable generator built with Flask.
 
-Add your classes, subjects, teachers and weekly requirements, then generate a timetable. It checks teacher clashes, daily limits and no back-to-back rules.
+## Features
 
-You can view class and teacher timetables, edit cells, import/export JSON and print to PDF.
+- Generate timetables from your school setup
+- Set teacher limits and minimum lessons per week
+- Avoid teacher clashes and back-to-back subjects
+- View timetables by class or teacher
+- Edit timetable cells
+- Import and export JSON
+- Print or save as PDF
+
+## Stack
+
+- Python
+- Flask
+- OR-Tools
+- HTML
+- CSS
+- JavaScript
+
 
 ## Run it
 
