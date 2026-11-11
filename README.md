@@ -8,6 +8,7 @@ Timetable generator built with Flask.
 - Set teacher limits and minimum lessons per week
 - Avoid teacher clashes and back-to-back subjects
 - View timetables by class or teacher
+- View free teachers
 - Edit timetable cells
 - Import and export JSON
 - Print or save as PDF
