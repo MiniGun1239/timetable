@@ -333,3 +333,47 @@ select {
         margin: auto;
     }
 }
+
+.theButton {
+    display: flex;
+    align-items: center;
+    gap:40px;
+}
+
+.generateArt {
+    position: relative;
+    width: 700px;
+}
+
+.tableArt {
+    display: block;
+    width: 100%;
+    /* it looked weird without this*/
+    mix-blend-mode: multiply;
+}
+
+.Arrow {
+    position: absolute;
+    width: 450px;
+    left: -150px;
+    top:-50px;
+    mix-blend-mode: multiply;
+}
+
+@media (max-width: 700px){
+    .theButton {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .generateArt {
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .Arrow {
+        width: 300px;
+        left: -100px;
+        top: 50px;
+    }
+}
