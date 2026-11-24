@@ -13,8 +13,18 @@ let generatePanel = document.getElementById("generatePanel");
 // aaaaaaaaaaaah not this shi
 generatePanel.innerHTML = `
     <h2>Generate timetable</h2>
+
+    <div class="theButton">
+        <div>
     <button id="makeTimetable">Generate</button>
     <p id="generateMessage"></p>
+        </div>
+
+    <div class = "generateArt">
+        <img class="Arrow" src="arrow-art.png" alt="">
+        <img class="tableArt" src="drawimgonnause.png" alt="">
+    </div>
+   </div>
 `;
 
 document.getElementById("makeTimetable").addEventListener("click", async function() {
