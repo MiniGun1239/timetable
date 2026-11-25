@@ -1,4 +1,3 @@
-import {newId} from "./store.js";
 
 // real simple shi
 export function createDefaultSetup(){
