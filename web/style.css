@@ -333,3 +333,49 @@ select {
         margin: auto;
     }
 }
+
+.theButton {
+    display: flex;
+    align-items: flex-start;
+    gap:80px;
+}
+
+.generateArt {
+    position: relative;
+    width: 1000px;
+    margin-left: -40px;
+}
+
+.tableArt {
+    display: block;
+    width: 180%;
+    /* it looked weird without this*/
+    mix-blend-mode: multiply;
+    transform:translateX(500px)
+}
+
+.Arrow {
+    position: absolute;
+    width: 150px;
+    left: -20px;
+    top:40px;
+    mix-blend-mode: multiply;
+}
+
+@media (max-width: 700px){
+    .theButton {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .generateArt {
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .Arrow {
+        width: 500px;
+        left: -200px;
+        top: -50px;
+    }
+}

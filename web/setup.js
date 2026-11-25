@@ -1,5 +1,6 @@
-import {config, newId, saveConfig} from "./store.js";
+import {config, newId, saveConfig, setConfig} from "./store.js";
 import {renderWeeklyRequirements, listenWeeklyRequirements, weeklyRequirementErrors } from "./weeklyRequirements.js";
+import { createDefaultSetup } from "./defaultSetup.js";
 
 const panel = document.getElementById("setupPanel");
 let openSetupSection = "school";
@@ -95,6 +96,7 @@ export function renderSetup(){
 
     panel.innerHTML = `
     <h2>School Setup</h2>
+    <button type="button" id="loadDefaultSetup">Load default setup</button>
     <div class="setupLayout">
         <div class="setupForm">
     <details class="setupSection" name="setupSections" data-section="school" ${openSetupSection === "school" ? "open" : ""}>
@@ -163,6 +165,19 @@ function listen(){
 listenWeeklyRequirements(panel, config, renderSetup)
     document.getElementById("schoolName").addEventListener("input", function (e) {
         config.school = e.target.value;
+    });
+
+    document.getElementById("loadDefaultSetup").addEventListener("click", function(){
+        if (confirm("Use the default example setup")){
+            setConfig(createDefaultSetup());
+            renderSetup();
+
+        
+let message = document.getElementById("setupMessage");
+message.textContent = "The default setup loaded, click generate";
+message.className = "validationMessage success";
+
+        }
     });
 
     document.getElementById("periodsPerDay").addEventListener("input", function (e){
