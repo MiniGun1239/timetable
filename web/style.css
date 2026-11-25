@@ -336,7 +336,7 @@ select {
 
 .theButton {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap:80px;
 }
 
@@ -348,16 +348,17 @@ select {
 
 .tableArt {
     display: block;
-    width: 100%;
+    width: 180%;
     /* it looked weird without this*/
     mix-blend-mode: multiply;
+    transform:translateX(500px)
 }
 
 .Arrow {
     position: absolute;
-    width: 200px;
+    width: 150px;
     left: -20px;
-    top:-20px;
+    top:40px;
     mix-blend-mode: multiply;
 }
 
