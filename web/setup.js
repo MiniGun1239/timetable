@@ -155,6 +155,10 @@ export function renderSetup(){
     listen();
 }
 
+let message = document.getElementById("setupMessage");
+message.textContent = "The default setup loaded, click generate";
+message.className = "validationMessage success";
+
 // aaah boring repetitive ahh shi
 
 // so i aint changing it
