@@ -337,12 +337,13 @@ select {
 .theButton {
     display: flex;
     align-items: center;
-    gap:40px;
+    gap:80px;
 }
 
 .generateArt {
     position: relative;
-    width: 700px;
+    width: 1000px;
+    margin-left: -40px;
 }
 
 .tableArt {
@@ -354,9 +355,9 @@ select {
 
 .Arrow {
     position: absolute;
-    width: 450px;
-    left: -150px;
-    top:-50px;
+    width: 200px;
+    left: -20px;
+    top:-20px;
     mix-blend-mode: multiply;
 }
 
@@ -372,8 +373,8 @@ select {
     }
 
     .Arrow {
-        width: 300px;
-        left: -100px;
-        top: 50px;
+        width: 500px;
+        left: -200px;
+        top: -50px;
     }
 }

@@ -21,7 +21,7 @@ generatePanel.innerHTML = `
         </div>
 
     <div class = "generateArt">
-        <img class="Arrow" src="arrow-art.png" alt="">
+        <img class="Arrow" src="arrow-cropped.png" alt="">
         <img class="tableArt" src="drawimgonnause.png" alt="">
     </div>
    </div>
