@@ -287,7 +287,7 @@ function renderGrid(){
         return;
     }
         box.innerHTML = "<p>Click a timetable cell to edit it</p>" + 
-            subjectSummary(schedule[picked], subjectName) + grid(packed);
+            subjectSummary(schedule[picked], subjectName) + grid(picked);
 
         box.querySelectorAll(".editCell").forEach(function(cell){
             cell.addEventListener("click", function(){
