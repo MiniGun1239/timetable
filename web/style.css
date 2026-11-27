@@ -379,3 +379,10 @@ select {
         top: -50px;
     }
 }
+
+.subjectSummary {
+    margin: 12px 0;
+    padding: 10px;
+    background: #EEEEEE;
+    border-left: 4px solid #8B9A6E;
+}

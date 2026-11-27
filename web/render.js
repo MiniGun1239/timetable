@@ -1,5 +1,6 @@
 import { config } from "./store.js"
-import { schedule, setSchedule } from "./data.js"
+import { schedule, setSchedule } from "./data.js";
+import { subjectSummary  } from "./subjectSummary.js";
 
 const panel = document.getElementById("timetablesPanel");
 let picked = "";
@@ -285,7 +286,8 @@ function renderGrid(){
         box.innerHTML = "<p>No timetable yet</p>"
         return;
     }
-        box.innerHTML = "<p>Click a timetable cell to edit it</p>" + grid(picked);
+        box.innerHTML = "<p>Click a timetable cell to edit it</p>" + 
+            subjectSummary(schedule[picked], subjectName) + grid(picked);
 
         box.querySelectorAll(".editCell").forEach(function(cell){
             cell.addEventListener("click", function(){
